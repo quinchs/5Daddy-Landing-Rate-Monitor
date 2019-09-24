@@ -37,13 +37,14 @@ namespace _5Daddy_Landing_Monitor
                 foreach (var item in dat.LandingStatslist)
                 {
                     dgv.Rows.Add();
-                    dgv.Rows[rownum].Cells[0].Value = item.Score;
-                    dgv.Rows[rownum].Cells[1].Value = item.FPM;
-                    dgv.Rows[rownum].Cells[2].Value = item.Speed;
-                    dgv.Rows[rownum].Cells[3].Value = item.Pitch;
-                    dgv.Rows[rownum].Cells[4].Value = item.Roll;
-                    dgv.Rows[rownum].Cells[5].Value = item.WindSpeed;
-                    dgv.Rows[rownum].Cells[6].Value = item.WindDirection;
+                    dgv.Rows[rownum].Cells[0].Value = item.Date;
+                    dgv.Rows[rownum].Cells[1].Value = item.Score;
+                    dgv.Rows[rownum].Cells[2].Value = item.FPM;
+                    dgv.Rows[rownum].Cells[3].Value = item.Speed;
+                    dgv.Rows[rownum].Cells[4].Value = item.Pitch;
+                    dgv.Rows[rownum].Cells[5].Value = item.Roll;
+                    dgv.Rows[rownum].Cells[6].Value = item.WindSpeed;
+                    dgv.Rows[rownum].Cells[7].Value = item.WindDirection;
                     dgv.Refresh();
                     rownum++;
                 }
@@ -61,13 +62,14 @@ namespace _5Daddy_Landing_Monitor
         internal static void AddStat(LandingStats stats)
         {
             dgv.Rows.Add();
-            dgv.Rows[rownum].Cells[0].Value = stats.Score;
-            dgv.Rows[rownum].Cells[1].Value = stats.FPM;
-            dgv.Rows[rownum].Cells[2].Value = stats.Speed;
-            dgv.Rows[rownum].Cells[3].Value = stats.Pitch;
-            dgv.Rows[rownum].Cells[4].Value = stats.Roll;
-            dgv.Rows[rownum].Cells[5].Value = stats.WindSpeed;
-            dgv.Rows[rownum].Cells[6].Value = stats.WindDirection;
+            dgv.Rows[rownum].Cells[0].Value = stats.Date;
+            dgv.Rows[rownum].Cells[1].Value = stats.Score;
+            dgv.Rows[rownum].Cells[2].Value = stats.FPM;
+            dgv.Rows[rownum].Cells[3].Value = stats.Speed;
+            dgv.Rows[rownum].Cells[4].Value = stats.Pitch;
+            dgv.Rows[rownum].Cells[5].Value = stats.Roll;
+            dgv.Rows[rownum].Cells[6].Value = stats.WindSpeed;
+            dgv.Rows[rownum].Cells[7].Value = stats.WindDirection;
             dgv.Refresh();
             //checkEmptyRow();
             SaveScores(stats);
@@ -110,6 +112,8 @@ namespace _5Daddy_Landing_Monitor
     }
     public struct LandingStats
     {
+        public string Date { get; set; }
+
         public string Speed { get; set; }
 
         public string FPM { get; set; }

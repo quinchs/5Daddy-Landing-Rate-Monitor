@@ -19,11 +19,11 @@ namespace _5Daddy_Landing_Monitor
         internal static bool LoggedIn = false;
         internal static string Username;
         internal static KeyValuePair<string, string> KPV { get; set; }
-        internal static string ErrorLog = Environment.CurrentDirectory + @"\ErrorLog.txt";
+        internal static string ErrorLog = Environment.CurrentDirectory + @"\Data\ErrorLog.txt";
         internal static ushort COM1act;
         internal static string Auth;
-        internal static string serverType;
-        internal static string landinglists = Environment.CurrentDirectory + @"\LandingScores.json";
+        internal static LRMServerData CurrentConnectedLRMServer { get; set; }
+        internal static string landinglists = Environment.CurrentDirectory + @"\Data\LandingScores.json";
         internal static ushort COM1sby;
         internal static void ErrorLogInput(Exception ex, string errorVal)
         {
@@ -73,6 +73,14 @@ namespace _5Daddy_Landing_Monitor
 
         internal static ATCComms atccomms1 { get; set; }
     }
+    public struct LRMServerData
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string PlayerCount { get; set; }
+        public Socket serverSocket { get; set; }
+    }
+
     public struct TCPJsonData
     {
         public string Header { get; set; }

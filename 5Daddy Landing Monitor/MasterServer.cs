@@ -15,7 +15,7 @@ namespace _5Daddy_Landing_Monitor
         internal static Socket MasterServerSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         internal const string IP = "192.168.2.116"; //master server ip
         
-        public static void Connect()
+        public static bool Connect()
         {
             try
             {
@@ -24,9 +24,13 @@ namespace _5Daddy_Landing_Monitor
             catch(SocketException ex)
             {
                 var msgbox = MessageBox.Show("Could not connect to Master server, Would you like to use offline mode?", "Uh Oh!", MessageBoxButtons.YesNo);
-                if(msgbox == DialogResult.Yes)
+                if (msgbox == DialogResult.Yes)
+                {
                     GlobalData.Offlinemode = true;
-                return;
+                    return true;
+                }
+                else { return false; }
+               
             }
             TCPJsonData data = new TCPJsonData();
             data.Header = "New_Client";
@@ -43,26 +47,48 @@ namespace _5Daddy_Landing_Monitor
             if (recievedData.Header == "Good_Version")
             {
                 //good
-
+                return true;
             }
             if(recievedData.Header == "Bad_Version")
             {
                 //bad
-                MessageBox.Show("Client out of date. Please install the new version at https://www.5fsx.com/lrm/ to access online mode!", "Uh Oh!", MessageBoxButtons.OK);
+                MessageBox.Show("Client out of date. Please install the new version at https://www.5fsx.com/lrm/ to access Online mode!, you are now in Offline Mode!", "Uh Oh!", MessageBoxButtons.OK);
                 GlobalData.Offlinemode = true;
+                return true;
 
             }
             else
             {
+                var m = MessageBox.Show("Unknown Responce From Master Server, Would you like to play in offline mode?", "Uh Oh!", MessageBoxButtons.YesNo);
+                if(m == DialogResult.Yes)
+                {
+                    GlobalData.Offlinemode = true;
+                    return true;
+                }
+                else { return false; }
+                    
                 //unknown responce
             }
 
         }
         public static void SendTCPData(TCPJsonData data)
         {
-            string json = JsonConvert.SerializeObject(data);
-            byte[] sendingBytes = Encoding.ASCII.GetBytes(json);
-            MasterServerSocket.Send(sendingBytes);
+            try
+            {
+                string json = JsonConvert.SerializeObject(data);
+                byte[] sendingBytes = Encoding.ASCII.GetBytes(json);
+                MasterServerSocket.Send(sendingBytes);
+            }
+            catch(SocketException ex)
+            {
+                throw new Exception("Could Not Send Data to Master Server!", ex);
+            }
+        }
+        public struct LRMServerClientListTCP
+        {
+            public string Header { get; set; }
+            public List<ServerList.LRMServer> Body { get; set; }
+            public string Auth { get; set; }
         }
     }
 }

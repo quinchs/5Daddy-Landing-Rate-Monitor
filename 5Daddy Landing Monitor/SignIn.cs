@@ -44,13 +44,13 @@ namespace _5Daddy_Landing_Monitor
 
             if (Visible)
             {
-                if (GlobalData.socket is null)
+                if (GlobalData.Offlinemode == true)
                 {
                     //check if connected to a server
                     label5.Show();
                     button1.Hide();
                     button2.Hide();
-                    label1.Hide();
+                    //label1.Hide();
                     label2.Hide();
                     label3.Hide();
                     label4.Hide();
@@ -58,13 +58,13 @@ namespace _5Daddy_Landing_Monitor
                     textBox2.Hide();
                     checkBox1.Hide();
                 }
-                if (GlobalData.socket != null)
+                if (GlobalData.Offlinemode == false)
                 {
                     //check if connected to a server
                     label5.Hide();
                     button1.Show();
                     button2.Show();
-                    label1.Show();
+                    //label1.Show();
                     label2.Show();
                     label3.Show();
                     label4.Show();
@@ -101,7 +101,7 @@ namespace _5Daddy_Landing_Monitor
                         var username = textBox1.Text;
                         if (Regex.IsMatch(username, ".*#[0-9]{4}"))
                         {
-                            if (GlobalData.socket != null)
+                            if (MasterServer.MasterServerSocket.Connected)
                             {
                                 try
                                 {
@@ -121,6 +121,7 @@ namespace _5Daddy_Landing_Monitor
                                     dat.Body.Add("Discord_Name", name);
                                     dat.Body.Add("User_Hash", hashChars);
                                     dat.Body.Add("User_Token", chars);
+                                    MasterServer.MasterServerSocket.ReceiveTimeout = -1;
                                     MasterServer.SendTCPData(dat);
 
                                     textBox2.Text = chars;

@@ -67,35 +67,48 @@ namespace _5Daddy_Landing_Monitor
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            try
+            if(ModifierKeys.HasFlag(Keys.Control))
             {
-                FSUIPCConnection.Open(FlightSim.Any);
-                ConnectionStatus();
+                ConnectionStatus(true);
             }
-            catch(FSUIPCException ex)
+            else
             {
-                GlobalData.ErrorLogInput(ex, "WARNING");
-                MessageBox.Show("Error: " + ex.Message, "Uh oh!", MessageBoxButtons.OK);
+                try
+                {
+                    FSUIPCConnection.Open(FlightSim.Any);
+                    ConnectionStatus();
+                }
+                catch (FSUIPCException ex)
+                {
+                    GlobalData.ErrorLogInput(ex, "WARNING");
+                    MessageBox.Show("Error: " + ex.Message, "Uh oh!", MessageBoxButtons.OK);
+                }
             }
         }
-        void ConnectionStatus()
+        void ConnectionStatus(bool dev = false)
         {
-            if(FSUIPCConnection.IsOpen)
+            if(FSUIPCConnection.IsOpen || dev)
             {
-                Connect.Hide();
-                pictureBox1.Hide();
-                button3.Show();
-                label1.Hide();
-                button7.Show();
-                button4.Show();
-                button5.Show();
-                label2.ForeColor = Color.Green;
-                label2.Text = "Connected!";
-                button2.Show();
-                options1.Hide();
-                button6.Show();
-                button1.Show();
-                userControl11.Show();
+                bool stat = false;
+                try { stat = MasterServer.Connect(); }
+                catch(Exception ex) { }
+                if (stat)
+                {
+                    Connect.Hide();
+                    pictureBox1.Hide();
+                    button3.Show();
+                    label1.Hide();
+                    button7.Show();
+                    button4.Show();
+                    button5.Show();
+                    label2.ForeColor = Color.Green;
+                    label2.Text = "Connected!";
+                    button2.Show();
+                    options1.Hide();
+                    button6.Show();
+                    button1.Show();
+                    userControl11.Show();
+                }
             }
         }
         
@@ -110,29 +123,22 @@ namespace _5Daddy_Landing_Monitor
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if(FSUIPCConnection.IsOpen)
-            {
-
-                options1.Hide();
-                signIn1.Visible = false;
-                serverList1.Hide();
-                userControl11.Show();
-                lrmDatabase1.Visible = false;
-                atcComms1.Visible = false;
-            }
+            options1.Show();
+            signIn1.Visible = false;
+            serverList1.Hide();
+            userControl11.Hide();
+            lrmDatabase1.Visible = false;
+            atcComms1.Visible = false;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            if (FSUIPCConnection.IsOpen)
-            {
-                options1.Show();
-                serverList1.Hide();
-                signIn1.Visible = false;
-                userControl11.Hide();
-                lrmDatabase1.Visible = false;
-                atcComms1.Visible = false;
-            }
+            options1.Show();
+            serverList1.Hide();
+            signIn1.Visible = false;
+            userControl11.Hide();
+            lrmDatabase1.Visible = false;
+            atcComms1.Visible = false;
         }
         
         private void button3_Click(object sender, EventArgs e)
@@ -150,6 +156,7 @@ namespace _5Daddy_Landing_Monitor
             button3.Hide();
             button5.Hide();
             button6.Hide();
+            button7.Hide();
             options1.Hide();
             button1.Hide();
             pictureBox1.Show();

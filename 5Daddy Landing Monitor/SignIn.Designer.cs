@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -49,16 +48,6 @@
             this.textBox1.Size = new System.Drawing.Size(276, 26);
             this.textBox1.TabIndex = 0;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(3, 173);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(1022, 114);
-            this.label1.TabIndex = 1;
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -84,31 +73,30 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label3.Location = new System.Drawing.Point(749, 20);
+            this.label3.Location = new System.Drawing.Point(695, 30);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(198, 25);
+            this.label3.Size = new System.Drawing.Size(228, 25);
             this.label3.TabIndex = 4;
-            this.label3.Text = "String to send to 5Bot";
+            this.label3.Text = "String to send to LRMBot";
             // 
             // button1
             // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
             this.button1.Location = new System.Drawing.Point(51, 90);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(221, 69);
+            this.button1.Size = new System.Drawing.Size(276, 69);
             this.button1.TabIndex = 5;
-            this.button1.Text = "Validate";
+            this.button1.Text = "Log in with 5LRMBot";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label4.ForeColor = System.Drawing.Color.Red;
-            this.label4.Location = new System.Drawing.Point(540, 60);
+            this.label4.Location = new System.Drawing.Point(694, 90);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(136, 25);
+            this.label4.Size = new System.Drawing.Size(298, 110);
             this.label4.TabIndex = 6;
             this.label4.Text = "Not logged in..";
             this.label4.Click += new System.EventHandler(this.label4_Click);
@@ -127,7 +115,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.button2.Location = new System.Drawing.Point(278, 90);
+            this.button2.Location = new System.Drawing.Point(75, 162);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(221, 69);
             this.button2.TabIndex = 8;
@@ -162,7 +150,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label5);
             this.Name = "SignIn";
@@ -176,7 +163,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
