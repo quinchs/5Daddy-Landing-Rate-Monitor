@@ -13,6 +13,8 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using Newtonsoft.Json;
+using System.Net;
+using System.Diagnostics;
 
 namespace _5Daddy_Landing_Monitor
 {
@@ -51,11 +53,7 @@ namespace _5Daddy_Landing_Monitor
                     button1.Hide();
                     button2.Hide();
                     //label1.Hide();
-                    label2.Hide();
-                    label3.Hide();
                     label4.Hide();
-                    textBox1.Hide();
-                    textBox2.Hide();
                     checkBox1.Hide();
                 }
                 if (GlobalData.Offlinemode == false)
@@ -65,12 +63,9 @@ namespace _5Daddy_Landing_Monitor
                     button1.Show();
                     button2.Show();
                     //label1.Show();
-                    label2.Show();
-                    label3.Show();
                     label4.Show();
-                    textBox1.Show();
-                    textBox2.Show();
                     checkBox1.Show();
+                    
                 }
             }
         }
@@ -80,7 +75,7 @@ namespace _5Daddy_Landing_Monitor
             if (memloging)
             {
                 button1.Text = "Sign In";
-                textBox1.Text = memloginName;
+                
                 checkBox1.Checked = true;
             }
         }
@@ -96,76 +91,122 @@ namespace _5Daddy_Landing_Monitor
             {
                 if (!memloging)
                 {
-                    if (textBox1.Text != null)
+                    try
                     {
-                        var username = textBox1.Text;
-                        if (Regex.IsMatch(username, ".*#[0-9]{4}"))
-                        {
-                            if (MasterServer.MasterServerSocket.Connected)
-                            {
-                                try
-                                {
-                                    var chars = RandomString(10);
-                                    MD5 hash = MD5.Create();
-                                    hashChars = GetMd5Hash(hash, chars);
-                                    Socket socket = GlobalData.socket;
-                                    var name = textBox1.Text;
-                                    //byte[] buffer = Encoding.ASCII.GetBytes("valadate|" + name + "|" + hashChars + "|" + chars); //send hashed chars for 5bot
-                                    //socket.Send(buffer);
-                                    TCPJsonData dat = new TCPJsonData()
-                                    {
-                                        Header = "Valadate_User",
-                                        Body = new Dictionary<string, string>(),
-                                        Auth = GlobalData.Auth
-                                    };
-                                    dat.Body.Add("Discord_Name", name);
-                                    dat.Body.Add("User_Hash", hashChars);
-                                    dat.Body.Add("User_Token", chars);
-                                    MasterServer.MasterServerSocket.ReceiveTimeout = -1;
-                                    MasterServer.SendTCPData(dat);
+                        HttpListener l = new HttpListener();
+                        l.Prefixes.Add("http://localhost:8080/oauth/");
+                        l.Start();
+                        Process.Start("https://discordapp.com/api/oauth2/authorize?client_id=602365472905756691&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Foauth%2F&response_type=code&scope=identify");
 
-                                    textBox2.Text = chars;
-                                    _name = name;
-                                    _socket = socket;
-                                    Thread t = new Thread(awaitRecieve);
-                                    t.Start();
-                                }
-                                catch (Exception ex)
-                                {
-                                    GlobalData.ErrorLogInput(ex, "ERROR");
-                                    MessageBox.Show("error: " + ex.Message, "Uh Oh!");
-                                }
-                            }
-                        }
-                        else
+                        HttpListenerContext context = l.GetContext();
+                        HttpListenerRequest request = context.Request;
+                        string id = request.QueryString["code"];
+                        TCPJsonData data = new TCPJsonData()
                         {
-                            MessageBox.Show("Invalad username", "Uh Oh!");
+                            Header = "Valadate_User",
+                            Body = new Dictionary<string, string>()
+                                        {
+                                            {"code", id }
+                                        }
+                        };
+                        string res = MasterServer.SendandRecieveTCPData(data).Result;
+
+                        var resData = JsonConvert.DeserializeObject<TCPJsonData>(res);
+                        string Discordusername = "";
+                        string Auth = "";
+                        if (resData.Header == "Authenticated")
+                        {
+                            Discordusername = resData.Body.FirstOrDefault(x => x.Key == "Discord_Username").Value;
+                            Auth = resData.Auth;
+
+                            GlobalData.Username = Discordusername;
+                            GlobalData.Auth = Auth;
                         }
+                        HttpListenerResponse _1response = context.Response;
+
+                        Stream dummyS = _1response.OutputStream;
+                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes($"<h1 style=\"color: #5e9ca0;\"><span style=\"color: #000000;\">Thank you, {GlobalData.Username} you have been Authenticated! you can close this window</span></h1><p><span style=\"color: #000000;\" > ps.Thanks for using the LRM :D </span></p><p> &nbsp;</p>");
+                        _1response.ContentLength64 = buffer.Length;
+                        dummyS.Write(buffer, 0, buffer.Length);
+
+                        //var chars = RandomString(10);
+                        //MD5 hash = MD5.Create();
+                        //hashChars = GetMd5Hash(hash, chars);
+                        //Socket socket = GlobalData.socket;
+                        //var name = textBox1.Text;
+                        ////byte[] buffer = Encoding.ASCII.GetBytes("valadate|" + name + "|" + hashChars + "|" + chars); //send hashed chars for 5bot
+                        ////socket.Send(buffer);
+                        //TCPJsonData dat = new TCPJsonData()
+                        //{
+                        //    Header = "Valadate_User",
+                        //    Body = new Dictionary<string, string>(),
+                        //    Auth = GlobalData.Auth
+                        //};
+                        //dat.Body.Add("Discord_Name", name);
+                        //dat.Body.Add("User_Hash", hashChars);
+                        //dat.Body.Add("User_Token", chars);
+                        //MasterServer.MasterServerSocket.ReceiveTimeout = -1;
+                        //MasterServer.SendTCPData(dat);
+
+                        //textBox2.Text = chars;
+                        //_name = name;
+                        //_socket = socket;
+                        //Thread t = new Thread(awaitRecieve);
+                        //t.Start();
                     }
-                }
-                if (memloging)
-                {
-                    if (GlobalData.socket != null) //check if were connected to a server
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            Socket socket = GlobalData.socket;
-                            _socket = socket;
-                            if (memloging && memloginName != "" && memloginToken != "") //check login details
-                            {
-                                button1.Text = "Working...";
-                                byte[] dat = Encoding.ASCII.GetBytes("clientgetacount|" + memloginName + "|" + memloginToken);
-                                socket.Send(dat);
-                                Thread th = new Thread(awaitLogin);
-                                th.Start();
-                            }
-                        }
-                        catch (Exception x)
-                        {
-                            MessageBox.Show("Error: " + x.Message);
-                        }
+                        GlobalData.ErrorLogInput(ex, "ERROR");
+                        MessageBox.Show("error: " + ex.Message, "Uh Oh!");
                     }
                 }
+                //if (memloging)
+                //{
+                //    //if (MasterServer.MasterServerSocket.Connected != false) //check if were connected to a server
+                //    {
+                //        try
+                //        {
+                //            TCPJsonData data = new TCPJsonData()
+                //            {
+                //                Header = "Login_User",
+                //                Body = new Dictionary<string, string>()
+                //            };
+                //            data.Body.Add("Discord_Name", memloginName);
+                //            data.Body.Add("User_Hash", memloginToken);
+                //            MasterServer.SendandRecieveTCPData(data);
+                //            byte[] rBuf = new byte[1024];
+                //            int rInt = MasterServer.MasterServerSocket.Receive(rBuf);
+                //            byte[] databuff = new byte[rInt];
+                //            Array.Copy(rBuf, databuff, rInt);
+                //            string text = Encoding.ASCII.GetString(databuff);
+                //            TCPJsonData rData = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                //            if(rData.Header == "Logged_In")
+                //            {
+                //                string discordName = rData.Body.FirstOrDefault(x => x.Key == "Discord_Name").Value;
+                //                string UserHash = rData.Body.FirstOrDefault(x => x.Key == "User_Hash").Value;
+                //                if (rData.Auth != null && UserHash == rData.Auth)
+                //                {
+                //                    GlobalData.LoggedIn = true;
+                //                    GlobalData.Username = discordName;
+                //                    GlobalData.Auth = UserHash;
+                //                    connected();
+                //                }
+                //            }
+                //            if(rData.Header == "Unknown_Login")
+                //            {
+
+                //            }
+                //            if(rData.Header == "Server_Error")
+                //            {
+
+                //            }
+                //        }
+                //        catch (Exception x)
+                //        {
+                //            MessageBox.Show("Error: " + x.Message);
+                //        }
+                //    }
+                //}
             }
         }
         private static Random random = new Random();
@@ -215,7 +256,7 @@ namespace _5Daddy_Landing_Monitor
                         if (rcved[2] == "true")
                         {
                             //logged in
-                            setconnect("Logged in!");
+                            setconnect($"Logged in as ");
                             GlobalData.LoggedIn = true;
                             GlobalData.Username = memloginName;
                         }
@@ -237,20 +278,20 @@ namespace _5Daddy_Landing_Monitor
         {
             try
             {
-                byte[] recieveBuf = new byte[1024];
-                int rec = MasterServer.MasterServerSocket.Receive(recieveBuf);
-                byte[] data = new byte[rec];
-                Array.Copy(recieveBuf, data, rec);
-                TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(Encoding.ASCII.GetString(data));
-                string discordName = recdata.Body.FirstOrDefault(x => x.Key == "Discord_Name").Value;
-                if (recdata.Header == "Verified" && discordName == _name)
-                {
-                    GlobalData.LoggedIn = true;
-                    GlobalData.Username = discordName;
-                    GlobalData.Auth = recdata.Auth;
-                    connected();
-                    //MessageBox.Show("Logged in as: " + _name, "Success!");
-                }
+                //byte[] recieveBuf = new byte[1024];
+                //int rec = MasterServer.MasterServerSocket.Receive(recieveBuf);
+                //byte[] data = new byte[rec];
+                //Array.Copy(recieveBuf, data, rec);
+                //TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(Encoding.ASCII.GetString(data));
+                //string discordName = recdata.Body.FirstOrDefault(x => x.Key == "Discord_Name").Value;
+                //if (recdata.Header == "Verified" && discordName == _name)
+                //{
+                //    GlobalData.LoggedIn = true;
+                //    GlobalData.Username = discordName;
+                //    GlobalData.Auth = recdata.Auth;
+                //    connected();
+                //    //MessageBox.Show("Logged in as: " + _name, "Success!");
+                //}
             }
             catch (Exception ex)
             {
@@ -270,28 +311,19 @@ namespace _5Daddy_Landing_Monitor
 
             if (checkBox1.Checked)
             {
-                byte[] dat = Encoding.ASCII.GetBytes("clientaddacount|" + _name + "|" + hashChars);
-                GlobalData.socket.Send(dat);
-                var checkacc = File.ReadAllLines(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config");
-                string curr = "";
-                foreach (var line in checkacc)
-                {
-                    if (line != "<!--" + _name + "|" + hashChars + "-->")
-                    {
-                        curr = curr + line + "\n";
-                    }
-                }
-                if (hashChars == "")
-                {
-                    MessageBox.Show("Error Saving Login!", "Uh oh!");
-                    return;
-                }
-                string rplc = "<!--" + _name + "|" + hashChars + "-->";
-                string newdata = curr + "\n" + rplc;
-                File.WriteAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config", newdata);
+                LoginDetail detail = new LoginDetail();
+                detail.UserName = GlobalData.Username;
+                detail.UserToken = GlobalData.Auth;
+                string json = JsonConvert.SerializeObject(detail);
+                string B64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(json));
+                File.WriteAllText(GlobalData._5DatFile, B64);
             }
         }
-
+        public struct LoginDetail
+        {
+            public string UserName { get; set; }
+            public string UserToken { get; set; }
+        }
         private void setconnect(string text)
         {
             if (label4.InvokeRequired || button2.InvokeRequired || button2.InvokeRequired)
@@ -307,8 +339,6 @@ namespace _5Daddy_Landing_Monitor
                 button1.Text = "Sign In";
                 label4.ForeColor = Color.Green;
             }
-
-
         }
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
@@ -322,7 +352,6 @@ namespace _5Daddy_Landing_Monitor
                 GlobalData.LoggedIn = false;
                 label4.Text = "Not logged in..";
                 label4.ForeColor = Color.Red;
-
             }
         }
 
@@ -374,6 +403,18 @@ namespace _5Daddy_Landing_Monitor
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+       
+
+        private void SignIn_Load_1(object sender, EventArgs e)
         {
 
         }

@@ -7,46 +7,36 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.IO;
 
 namespace _5Daddy_Landing_Monitor
 {
     class MasterServer
     {
-        internal static Socket MasterServerSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        internal const string IP = "192.168.2.116"; //master server ip
+        private static HttpClient msClient = new HttpClient();
+        //private static Stream msStream;
+        internal static Uri URI = new Uri("http://localhost:8081/"); //master server ip
         
-        public static bool Connect()
+        public async static Task<bool> Connect()
         {
-            try
-            {
-                MasterServerSocket.Connect(IP, 7979);
-            }
-            catch(SocketException ex)
-            {
-                var msgbox = MessageBox.Show("Could not connect to Master server, Would you like to use offline mode?", "Uh Oh!", MessageBoxButtons.YesNo);
-                if (msgbox == DialogResult.Yes)
-                {
-                    GlobalData.Offlinemode = true;
-                    return true;
-                }
-                else { return false; }
-               
-            }
             TCPJsonData data = new TCPJsonData();
             data.Header = "New_Client";
             data.Body = new Dictionary<string, string>();
             data.Body.Add("Version", GlobalData.Version);
-            byte[] contactBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
-            MasterServerSocket.Send(contactBytes);
-            byte[] recieveBuffer = new byte[1024];
-            var ints = MasterServerSocket.Receive(recieveBuffer);
-            byte[] recdata = new byte[ints];
-            Array.Copy(recieveBuffer, recdata, ints);
-            string rcved = Encoding.ASCII.GetString(recdata);
+            string rcved = "";
+            msClient.Timeout = new TimeSpan(50000000);
+            try { rcved = await SendandRecieveTCPData(data); }
+            catch(Exception ex)
+            {
+                var msgb = MessageBox.Show("Error Connecting to Master server, Continue in offline mode?");
+                if(msgb == DialogResult.Yes) { return false; }
+            }
             TCPJsonData recievedData = JsonConvert.DeserializeObject<TCPJsonData>(rcved);
             if (recievedData.Header == "Good_Version")
             {
                 //good
+                
                 return true;
             }
             if(recievedData.Header == "Bad_Version")
@@ -55,7 +45,6 @@ namespace _5Daddy_Landing_Monitor
                 MessageBox.Show("Client out of date. Please install the new version at https://www.5fsx.com/lrm/ to access Online mode!, you are now in Offline Mode!", "Uh Oh!", MessageBoxButtons.OK);
                 GlobalData.Offlinemode = true;
                 return true;
-
             }
             else
             {
@@ -71,13 +60,25 @@ namespace _5Daddy_Landing_Monitor
             }
 
         }
-        public static void SendTCPData(TCPJsonData data)
+        public async static Task<string> SendandRecieveTCPData(TCPJsonData data)
         {
             try
             {
                 string json = JsonConvert.SerializeObject(data);
-                byte[] sendingBytes = Encoding.ASCII.GetBytes(json);
-                MasterServerSocket.Send(sendingBytes);
+                var req = new HttpRequestMessage()
+                {
+                    Content = new ByteArrayContent(Encoding.ASCII.GetBytes(json)),
+                    Method = new HttpMethod("POST"),
+                    RequestUri = URI,
+                };
+                var msg = msClient.SendAsync(req).Result;
+                Stream rstream = await msg.Content.ReadAsStreamAsync();
+                byte[] buff = new byte[1024];
+                int rec = rstream.Read(buff, 0, Convert.ToInt32(rstream.Length));
+                byte[] databuff = new byte[rec];
+                Array.Copy(buff, databuff, rec);
+                string text = Encoding.ASCII.GetString(databuff);
+                return text;
             }
             catch(SocketException ex)
             {

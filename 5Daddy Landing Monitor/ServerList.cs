@@ -44,32 +44,42 @@ namespace _5Daddy_Landing_Monitor
                 button2.Hide();
                 button3.Hide();
                 comboBox1.Hide();
+                label2.Hide();
             }
             else
             {
                 if (Visible)
                 {
+                    label2.Hide();
                     TCPJsonData data = new TCPJsonData();
                     data.Header = "Get_Servers";
                     data.Auth = GlobalData.Auth;
                     byte[] sendBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
-                    MasterServer.MasterServerSocket.ReceiveTimeout = 5000;
-                    try { MasterServer.SendTCPData(data); }
+                    //MasterServer.MasterServerSocket.ReceiveTimeout = 5000;
+                    try { MasterServer.SendandRecieveTCPData(data); }
                     catch(Exception ex) { MessageBox.Show("Could not Refresh sevrers. The Master Didnt Respond!", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
                     byte[] buffer = new byte[1024];
-                    int Recievebuf = MasterServer.MasterServerSocket.Receive(buffer);
+                    int Recievebuf = 0; //MasterServer.MasterServerSocket.Receive(buffer);
                     byte[] databuff = new byte[Recievebuf];
                     Array.Copy(buffer, databuff, Recievebuf);
                     string text = Encoding.ASCII.GetString(databuff);
                     
                     if (text.Contains("Header\":\"Server_Error"))
                     {
-                        TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
-                        MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                        if(GlobalData.Auth == "")
+                        {
+                            label2.Show();
+                        }
+                        else
+                        {
+                            TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                            MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                        }
                     }
                     if (text.Contains("Header\":\"LRMServers_List"))
                     {
+                        label2.Hide();
                         MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
                         if (serverListData.Auth == GlobalData.Auth)
                         {
@@ -103,22 +113,30 @@ namespace _5Daddy_Landing_Monitor
                     Body = new Dictionary<string, string>()
                 };
 
-                try { MasterServer.SendTCPData(data); }
+                try { MasterServer.SendandRecieveTCPData(data); }
                 catch(Exception ex) { GlobalData.ErrorLogInput(ex, "ERROR"); }
                 byte[] buffer = new byte[1024];
-                int Recievebuf = MasterServer.MasterServerSocket.Receive(buffer);
+                int Recievebuf = 0;// MasterServer.MasterServerSocket.Receive(buffer);
                 byte[] databuff = new byte[Recievebuf];
                 Array.Copy(buffer, databuff, Recievebuf);
                 string text = Encoding.ASCII.GetString(databuff);
-                var header = JsonConvert.DeserializeObject<Dictionary<string, string>>(text).FirstOrDefault(x => x.Key == "Header").Value;
-                if (header == "Server_Error")
+                //var header = JsonConvert.DeserializeObject<Dictionary<string, string>>(text).FirstOrDefault(x => x.Key == "Header").Value;
+                if (text.Contains("Header\":\"Server_Error"))
                 {
-                    TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
-                    MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}");
-                    GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                    if (GlobalData.Auth == "")
+                    {
+                        label2.Show();
+                    }
+                    else
+                    {
+                        TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                        MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                    }
                 }
-                if (header == "LRMServers_List")
+                if (text.Contains("Header\":\"LRMServers_List"))
                 {
+                    label2.Hide();
                     MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
                     if(serverListData.Auth == GlobalData.Auth)
                     {
@@ -149,6 +167,8 @@ namespace _5Daddy_Landing_Monitor
                 else
                 {
                     I = 0;
+                    dataGridView1.Rows.Clear();
+                    comboBox1.Items.Clear();
                     foreach(var server in serverList)
                     {
                         var dat = new KeyValuePair<string, string>(server.Name, server.IP);
@@ -156,7 +176,7 @@ namespace _5Daddy_Landing_Monitor
                         serverNameIP.Add(dat);
                         comboBox1.DisplayMember = "key";
                         comboBox1.ValueMember = "value";
-                        string stat = "";
+                        string stat = "Online!";
 
                         dataGridView1.Rows[I].Cells[2].Style.ForeColor = Color.Green;
 
@@ -165,6 +185,7 @@ namespace _5Daddy_Landing_Monitor
                         dataGridView1.Rows[I].Cells[2].Value = stat;
                         dataGridView1.Rows[I].Cells[3].Value = server.Type;
                         dataGridView1.Rows[I].Visible = true;
+                        dataGridView1.Rows.Add();
 
                         I++;
                     }
@@ -336,6 +357,11 @@ namespace _5Daddy_Landing_Monitor
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click_1(object sender, EventArgs e)
         {
 
         }

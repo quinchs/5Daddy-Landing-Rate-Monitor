@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FSUIPC;
+using Newtonsoft.Json;
+using static _5Daddy_Landing_Monitor.SignIn;
 
 namespace _5Daddy_Landing_Monitor
 {
@@ -45,24 +47,21 @@ namespace _5Daddy_Landing_Monitor
         private void Form1_Load(object sender, EventArgs e)
         {
             //handles memory login
-            string tstMtch = File.ReadAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config");
-
-            //set global instances
-            GlobalInstances.atccomms1 = atcComms1;
-            GlobalInstances.LRMDatabase1 = lrmDatabase1;
-            GlobalInstances.options1 = options1;
-            GlobalInstances.signin1 = signIn1;
-            GlobalInstances.UserControl1 = userControl11;
-            GlobalInstances.serverlist1 = serverList1;
-
-            if (Regex.IsMatch(tstMtch, "<!--(.*?)-->"))
+            if (!File.Exists(GlobalData._5DatFile)) { File.Create(GlobalData._5DatFile); }
+            string dat = File.ReadAllText(GlobalData._5DatFile);
+            if (dat != "")
             {
-                var mth = Regex.Matches(tstMtch, "<!--(.*?)-->");
-                string nameToken = mth[0].Value.Trim('<', '!', '-', '>');
-                string[] vs = nameToken.Split('|');
-                SignIn.memloging = true;
-                SignIn.memloginName = vs[0];
-                SignIn.memloginToken = vs[1];
+                string dB64 = "";
+                try { dB64 = Encoding.ASCII.GetString(Convert.FromBase64String(dat)); }
+                catch(Exception ex) { GlobalData.ErrorLogInput(ex, "ERROR"); return; }
+                try
+                {
+                    LoginDetail detail = JsonConvert.DeserializeObject<LoginDetail>(dB64);
+                    memloging = true;
+                    memloginName = detail.UserName;
+                    memloginToken = detail.UserToken;
+                }
+                catch(Exception ex) { GlobalData.ErrorLogInput(ex, "ERROR"); return; }
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -89,9 +88,9 @@ namespace _5Daddy_Landing_Monitor
         {
             if(FSUIPCConnection.IsOpen || dev)
             {
-                bool stat = false;
-                try { stat = MasterServer.Connect(); }
-                catch(Exception ex) { }
+                bool stat = true;
+                try { stat = MasterServer.Connect().Result; }
+                catch (Exception ex) { }
                 if (stat)
                 {
                     Connect.Hide();
@@ -123,10 +122,10 @@ namespace _5Daddy_Landing_Monitor
 
         private void button2_Click(object sender, EventArgs e)
         {
-            options1.Show();
+            options1.Hide();
             signIn1.Visible = false;
             serverList1.Hide();
-            userControl11.Hide();
+            userControl11.Show();
             lrmDatabase1.Visible = false;
             atcComms1.Visible = false;
         }
