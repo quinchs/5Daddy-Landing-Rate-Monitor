@@ -21,10 +21,7 @@ namespace _5Daddy_Landing_Monitor
     public partial class SignIn : UserControl
     {
         private delegate void SafeCallDelegate(string text);
-
-        private string _name = "";
-        private string hashChars = "";
-        private Socket _socket = null;
+        
         internal static bool memloging = false;
         internal static string memloginName = "";
         internal static string memloginToken = "";
@@ -103,11 +100,11 @@ namespace _5Daddy_Landing_Monitor
                         string id = request.QueryString["code"];
                         TCPJsonData data = new TCPJsonData()
                         {
-                            Header = "Valadate_User",
+                            Header = "Validate_User",
                             Body = new Dictionary<string, string>()
-                                        {
-                                            {"code", id }
-                                        }
+                            {
+                                {"code", id }
+                            }
                         };
                         string res = MasterServer.SendandRecieveTCPData(data).Result;
 
@@ -240,67 +237,7 @@ namespace _5Daddy_Landing_Monitor
         {
 
         }
-        internal void awaitLogin()
-        {
-            try
-            {
-                byte[] recieveBuf = new byte[1024];
-                int rec = _socket.Receive(recieveBuf);
-                byte[] data = new byte[rec];
-                Array.Copy(recieveBuf, data, rec);
-                string[] rcved = Encoding.ASCII.GetString(data).Split('|');
-                if (rcved[0] == "returnlogin")
-                {
-                    if (rcved[1] == memloginName)// check if login is for this user
-                    {
-                        if (rcved[2] == "true")
-                        {
-                            //logged in
-                            setconnect($"Logged in as ");
-                            GlobalData.LoggedIn = true;
-                            GlobalData.Username = memloginName;
-                        }
-                        if (rcved[2] == "false")
-                        {
-                            MessageBox.Show("couldn't log in as " + memloginName + ", Invalad Token!");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetType() == typeof(SocketException)) { MessageBox.Show("Error: " + ex.Message + ", Connection to server closed!", "Uh Oh!"); GlobalData.ErrorLogInput(ex, "WARNING"); }
-                else { GlobalData.ErrorLogInput(ex, "ERROR"); }
-            }
-
-        }
-        internal void awaitRecieve()
-        {
-            try
-            {
-                //byte[] recieveBuf = new byte[1024];
-                //int rec = MasterServer.MasterServerSocket.Receive(recieveBuf);
-                //byte[] data = new byte[rec];
-                //Array.Copy(recieveBuf, data, rec);
-                //TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(Encoding.ASCII.GetString(data));
-                //string discordName = recdata.Body.FirstOrDefault(x => x.Key == "Discord_Name").Value;
-                //if (recdata.Header == "Verified" && discordName == _name)
-                //{
-                //    GlobalData.LoggedIn = true;
-                //    GlobalData.Username = discordName;
-                //    GlobalData.Auth = recdata.Auth;
-                //    connected();
-                //    //MessageBox.Show("Logged in as: " + _name, "Success!");
-                //}
-            }
-            catch (Exception ex)
-            {
-                if (ex.GetType() == typeof(SocketException)) { MessageBox.Show("Error: " + ex.Message + ", Connection to server closed!", "Uh Oh!"); GlobalData.ErrorLogInput(ex, "WARNING"); }
-                else { GlobalData.ErrorLogInput(ex, "ERROR"); }
-            }
-
-        }
-
+        
         private void label4_Click(object sender, EventArgs e)
         {
 

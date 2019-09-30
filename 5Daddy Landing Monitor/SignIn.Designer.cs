@@ -129,6 +129,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        
     }
 }

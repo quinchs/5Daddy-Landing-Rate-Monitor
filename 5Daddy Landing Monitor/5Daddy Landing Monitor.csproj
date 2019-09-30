@@ -84,6 +84,7 @@
       <DependentUpon>LRMDatabase.cs</DependentUpon>
     </Compile>
     <Compile Include="MasterServer.cs" />
+    <Compile Include="Offsets.cs" />
     <Compile Include="Options.cs">
       <SubType>UserControl</SubType>
     </Compile>

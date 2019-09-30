@@ -27,9 +27,9 @@ namespace _5Daddy_Landing_Monitor
             string rcved = "";
             msClient.Timeout = new TimeSpan(50000000);
             try { rcved = await SendandRecieveTCPData(data); }
-            catch(Exception ex)
+            catch(Exception)
             {
-                var msgb = MessageBox.Show("Error Connecting to Master server, Continue in offline mode?");
+                var msgb = MessageBox.Show("Error Connecting to Master server, Continue in offline mode?", "Uh Oh!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                 if(msgb == DialogResult.Yes) { return false; }
             }
             TCPJsonData recievedData = JsonConvert.DeserializeObject<TCPJsonData>(rcved);
