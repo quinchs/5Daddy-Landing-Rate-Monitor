@@ -26,7 +26,7 @@ namespace _5Daddy_Landing_Monitor
         private Offset<int> windDirection = new Offset<int>(0x04DA);  //*360/65536 for heading
         private Offset<int> pitch = new Offset<int>(0x0578);
         private Offset<string> aircraftType = new Offset<string>(0x3D00, 256);
-        private Offset<string> aircraftID = new Offset<string>(0x3130, 12);
+        private Offset<string> aircraftID = new Offset<string>(0x313C, 12);
         private Offset<int> roll = new Offset<int>(0x057C);
         public static int RefreshRate = 50;
         private static int checkGroundTime = 0;
@@ -248,13 +248,25 @@ namespace _5Daddy_Landing_Monitor
         {
             try
             {
-                if (GlobalData.LoggedIn && GlobalData.socket != null)
+                if (GlobalData.LoggedIn && GlobalData.CurrentConnectedLRMServer.Type == "LRMComp")
                 {
-                    Socket socket = ServerList._clientSocket;
-                    //byte[] dt = Encoding.ASCII.GetBytes("test");
-
-                    byte[] dt = Encoding.ASCII.GetBytes("datasent|" + fpm + "|" + airspd + "|" + plnPitch + "|" + pnlBank + "|" + windSpeed + "|" + windHeading + "|" + GlobalData.Username + "|" + aircrftType + "|" + aircraftID);
-                    socket.Send(dt);
+                    TCPJsonData data = new TCPJsonData()
+                    {
+                        Auth = GlobalData.Auth,
+                        Header = "Landing_Data",
+                        Body = new Dictionary<string, string>()
+                        {
+                            {"Fpm", fpm },
+                            {"Air_Speed", airspd },
+                            {"Plane_Pitch", plnPitch },
+                            {"Plane_Bank", pnlBank},
+                            {"Wind_Speed", windSpeed },
+                            {"Wind_Heading", windHeading },
+                            {"Aircraft_Type", aircrftType  },
+                            {"Aircraft_ID", aircraftID }
+                        }
+                    };
+                    //Send to master server
                 }
             }
             catch(Exception ex)
@@ -320,25 +332,6 @@ namespace _5Daddy_Landing_Monitor
         }
         public void UpdateScreenData()
         {
-            try
-            {
-                if (!(ServerList._clientSocket.Poll(1, SelectMode.SelectRead) && ServerList._clientSocket.Available == 0)) { }
-
-            }
-            catch (Exception)
-            {
-                ServerList._clientSocket = null;
-                GlobalData.socket = null;
-                string temp = GlobalData.KPV.Key;
-                SignIn.resetLogin = true;
-                checkBox1.Hide();
-                GlobalData.KPV = new KeyValuePair<string, string>("","");
-                GlobalData.LoggedIn = false;
-                GlobalData.Username = "";
-                GlobalData.socket = null;
-                MessageBox.Show("Lost connection to " + temp, "Uh Oh!");
-            }
-
             if (GlobalData.LoggedIn)
             {
                 if(GlobalData.KPV.ToString() != null)
@@ -350,14 +343,11 @@ namespace _5Daddy_Landing_Monitor
             {
                 checkBox1.Hide();
             }
-
         }
-
         private void label10_Click(object sender, EventArgs e)
         {
 
         }
-        //// If you want to display as feet/minute a further conversion is required:
-
+        
     }
 }

@@ -30,7 +30,7 @@ namespace _5Daddy_Landing_Monitor
             catch(Exception)
             {
                 var msgb = MessageBox.Show("Error Connecting to Master server, Continue in offline mode?", "Uh Oh!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                if(msgb == DialogResult.Yes) { return false; }
+                if(msgb == DialogResult.Yes) { GlobalData.Offlinemode = true; return true; }
             }
             TCPJsonData recievedData = JsonConvert.DeserializeObject<TCPJsonData>(rcved);
             if (recievedData.Header == "Good_Version")

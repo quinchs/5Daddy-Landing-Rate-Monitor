@@ -26,18 +26,18 @@ namespace _5Daddy_Landing_Monitor
         }
         private void listen()
         {
-            try
-            {
-                if (GlobalData.socket != null)
-                {
-                    client.Connect(GlobalData.KPV.Value, 7878);
-                    stream = client.GetStream();
-                }
-            }
-            catch(Exception ex)
-            {
-                GlobalData.ErrorLogInput(ex, "Error");
-            }
+            //try
+            //{
+            //    if (GlobalData.socket != null)
+            //    {
+            //        client.Connect(GlobalData.KPV.Value, 7878);
+            //        stream = client.GetStream();
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    GlobalData.ErrorLogInput(ex, "Error");
+            //}
         }
         private void updatecoms(Channels data)
         {

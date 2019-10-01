@@ -233,7 +233,7 @@ namespace _5Daddy_Landing_Monitor
                     {
                         label1.Text = "Connected to: None";
                         label1.ForeColor = Color.Red;
-                        GlobalData.socket = null;
+                        //GlobalData.socket = null;
                         //MessageBox.Show("Disconnected!", "Disconnect message");
                         _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     }
@@ -250,20 +250,20 @@ namespace _5Daddy_Landing_Monitor
             }
             catch(Exception ex)
             {
-                _clientSocket.Shutdown(SocketShutdown.Both);
-                _clientSocket.Close();
-                if (!_clientSocket.Connected)
-                {
-                    label1.Text = "Connected to: None";
-                    label1.ForeColor = Color.Red;
-                    GlobalData.socket = null;
-                    //MessageBox.Show("Disconnected!", "Disconnect message");
-                    _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                }
-                else
-                {
-                    MessageBox.Show("Failed to Disconnect.. :(", "Uh Oh!");
-                }
+                //_clientSocket.Shutdown(SocketShutdown.Both);
+                //_clientSocket.Close();
+                //if (!_clientSocket.Connected)
+                //{
+                //    label1.Text = "Connected to: None";
+                //    label1.ForeColor = Color.Red;
+                //    GlobalData.socket = null;
+                //    //MessageBox.Show("Disconnected!", "Disconnect message");
+                //    _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                //}
+                //else
+                //{
+                //    MessageBox.Show("Failed to Disconnect.. :(", "Uh Oh!");
+                //}
             }
         }
 
@@ -275,7 +275,7 @@ namespace _5Daddy_Landing_Monitor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(GlobalData.socket is null)
+            //if(GlobalData.socket is null)
             {
                 try
                 {

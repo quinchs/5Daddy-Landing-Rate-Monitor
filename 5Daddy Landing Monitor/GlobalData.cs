@@ -14,7 +14,6 @@ namespace _5Daddy_Landing_Monitor
     static class GlobalData
     {
         internal const string Version = "1.0.0";
-        internal static Socket socket;
         internal static bool Offlinemode = false;
         internal static bool LoggedIn = false;
         internal static string Username;
@@ -41,23 +40,23 @@ namespace _5Daddy_Landing_Monitor
         }
         internal static void sendJSONdata(TCPJsonData data)
         {
-            if(socket != null)
-            {
-                if (LoggedIn)
-                {
-                    if (!data.Equals(null))
-                    {
-                        string jsonString = JsonConvert.SerializeObject(data);
-                        byte[] dat = Encoding.ASCII.GetBytes(jsonString);
-                        socket.Send(dat);
-                    }
-                    else
-                        throw new Exception("Data was null!");
-                }
-                else
-                    throw new Exception("User not logged in!");
-            }
-            else { throw new Exception("The current server socket was null!", new SocketException()); }
+            //if(socket != null)
+            //{
+            //    if (LoggedIn)
+            //    {
+            //        if (!data.Equals(null))
+            //        {
+            //            string jsonString = JsonConvert.SerializeObject(data);
+            //            byte[] dat = Encoding.ASCII.GetBytes(jsonString);
+            //            socket.Send(dat);
+            //        }
+            //        else
+            //            throw new Exception("Data was null!");
+            //    }
+            //    else
+            //        throw new Exception("User not logged in!");
+            //}
+            //else { throw new Exception("The current server socket was null!", new SocketException()); }
         }
     }
     static class GlobalInstances

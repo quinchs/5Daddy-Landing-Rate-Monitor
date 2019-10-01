@@ -46,6 +46,8 @@ namespace _5Daddy_Landing_Monitor
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
+            
             //handles memory login
             if (!File.Exists(GlobalData._5DatFile)) { File.Create(GlobalData._5DatFile); }
             string dat = File.ReadAllText(GlobalData._5DatFile);
