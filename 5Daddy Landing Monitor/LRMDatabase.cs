@@ -33,7 +33,7 @@ namespace _5Daddy_Landing_Monitor
             try
             {
                 var dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
-                
+
                 foreach (var item in dat.LandingStatslist)
                 {
                     dgv.Rows.Add();
@@ -49,7 +49,7 @@ namespace _5Daddy_Landing_Monitor
                     rownum++;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"It Fockin Broke M8: {ex}", "Darn M8");
             }

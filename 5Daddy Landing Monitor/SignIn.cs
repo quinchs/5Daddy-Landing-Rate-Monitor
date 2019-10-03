@@ -21,7 +21,7 @@ namespace _5Daddy_Landing_Monitor
     public partial class SignIn : UserControl
     {
         private delegate void SafeCallDelegate(string text);
-        
+
         internal static bool memloging = false;
         internal static string memloginName = "";
         internal static string memloginToken = "";
@@ -62,7 +62,7 @@ namespace _5Daddy_Landing_Monitor
                     //label1.Show();
                     label4.Show();
                     checkBox1.Show();
-                    
+
                 }
             }
         }
@@ -72,9 +72,11 @@ namespace _5Daddy_Landing_Monitor
             if (memloging)
             {
                 button1.Text = "Sign In";
-                
+
                 checkBox1.Checked = true;
+                button2.Hide();
             }
+            button2.Hide();
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
@@ -118,6 +120,7 @@ namespace _5Daddy_Landing_Monitor
 
                             GlobalData.Username = Discordusername;
                             GlobalData.Auth = Auth;
+                            GlobalData.LoggedIn = true;
                         }
                         HttpListenerResponse _1response = context.Response;
 
@@ -125,6 +128,11 @@ namespace _5Daddy_Landing_Monitor
                         byte[] buffer = System.Text.Encoding.UTF8.GetBytes($"<h1 style=\"color: #5e9ca0;\"><span style=\"color: #000000;\">Thank you, {GlobalData.Username} you have been Authenticated! you can close this window</span></h1><p><span style=\"color: #000000;\" > ps.Thanks for using the LRM :D </span></p><p> &nbsp;</p>");
                         _1response.ContentLength64 = buffer.Length;
                         dummyS.Write(buffer, 0, buffer.Length);
+                        label4.Text = GlobalData.Username.Split('#')[0];
+                        label4.ForeColor = Color.Green;
+                        button1.Text = "Sign out";
+                        l.Stop();
+                        l.Close();
 
                         //var chars = RandomString(10);
                         //MD5 hash = MD5.Create();
@@ -205,6 +213,31 @@ namespace _5Daddy_Landing_Monitor
                 //    }
                 //}
             }
+            else if (GlobalData.LoggedIn)
+            {
+                if (!checkBox1.Checked)
+                {
+                    if (memloging)
+                    {
+                        string filecont = File.ReadAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config");
+                        if (Regex.IsMatch(filecont, "<!--" + memloginName + "|" + memloginToken + "-->"))
+                        {
+                            string newrplc = Regex.Replace(filecont, "<!--" + memloginName + "|" + memloginToken + "-->", string.Empty);
+                            File.WriteAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config", newrplc);
+                            button1.Text = "Login with Discord";
+                        }
+                    }
+                }
+
+                GlobalData.Username = "";
+                GlobalData.LoggedIn = false;
+                memloginToken = "";
+                memloginName = "";
+                memloging = false;
+                timer1.Enabled = false;
+                label4.Text = "Not logged in..";
+                label4.ForeColor = Color.Red;
+            }
         }
         private static Random random = new Random();
         public static string RandomString(int length)
@@ -237,7 +270,7 @@ namespace _5Daddy_Landing_Monitor
         {
 
         }
-        
+
         private void label4_Click(object sender, EventArgs e)
         {
 
@@ -294,30 +327,7 @@ namespace _5Daddy_Landing_Monitor
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (GlobalData.LoggedIn)
-            {
-                if (!checkBox1.Checked)
-                {
-                    if (memloging)
-                    {
-                        string filecont = File.ReadAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config");
-                        if (Regex.IsMatch(filecont, "<!--" + memloginName + "|" + memloginToken + "-->"))
-                        {
-                            string newrplc = Regex.Replace(filecont, "<!--" + memloginName + "|" + memloginToken + "-->", string.Empty);
-                            File.WriteAllText(Environment.CurrentDirectory + @"\5Daddy Landing Monitor.exe.config", newrplc);
-                        }
-                    }
-                }
-
-                GlobalData.Username = "";
-                GlobalData.LoggedIn = false;
-                memloginToken = "";
-                memloginName = "";
-                memloging = false;
-                timer1.Enabled = false;
-                label4.Text = "Not logged in..";
-                label4.ForeColor = Color.Red;
-            }
+            
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -349,9 +359,14 @@ namespace _5Daddy_Landing_Monitor
 
         }
 
-       
+
 
         private void SignIn_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }

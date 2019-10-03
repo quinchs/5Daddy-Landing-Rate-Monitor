@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FSUIPC;
 using Newtonsoft.Json;
+using MetroFramework;
+using MetroFramework.Forms;
 using static _5Daddy_Landing_Monitor.SignIn;
 
 namespace _5Daddy_Landing_Monitor
 {
-    public partial class Form1 : Form
+    public partial class Form1 : MetroForm
     {
+
         public Form1()
         {
             InitializeComponent();
-            this.Controls.Add(this.options1);
-            this.Controls.Add(this.serverList1);
-            this.Controls.Add(this.userControl11);
 
             userControl11.Hide();
             button2.Hide();
@@ -33,6 +33,9 @@ namespace _5Daddy_Landing_Monitor
             button7.Hide();
             button3.Hide();
             signIn1.Visible = false;
+            HR1.Visible = false;
+            HR.Visible = false;
+            label3.Visible = false;
             serverList1.Hide();
             options1.Hide();
             button1.Hide();
@@ -42,10 +45,11 @@ namespace _5Daddy_Landing_Monitor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            
+            if (!File.Exists(GlobalData.landinglistsJsonPath)) { File.Create(GlobalData.landinglistsJsonPath).Close(); }
+            if (!File.Exists(GlobalData.ErrorLog)) { File.Create(GlobalData.ErrorLog).Close(); }
+
             //handles memory login
-            if (!File.Exists(GlobalData._5DatFile)) { File.Create(GlobalData._5DatFile); }
+            if (!File.Exists(GlobalData._5DatFile)) { File.Create(GlobalData._5DatFile).Close(); }
             string dat = File.ReadAllText(GlobalData._5DatFile);
             if (dat != "")
             {
@@ -98,8 +102,11 @@ namespace _5Daddy_Landing_Monitor
                     button7.Show();
                     button4.Show();
                     button5.Show();
-                    label2.ForeColor = Color.Green;
-                    label2.Text = "Connected!";
+                    HR1.Visible = true;
+                    HR.Visible = true;
+                    label3.Visible = true;
+                    label3.ForeColor = Color.Green;
+                    label3.Text = "Connected!";
                     button2.Show();
                     options1.Hide();
                     button6.Show();
@@ -141,27 +148,26 @@ namespace _5Daddy_Landing_Monitor
         private void button3_Click(object sender, EventArgs e)
         {
             FSUIPCConnection.Close();
-            userControl11.Hide();
-            lrmDatabase1.Visible = false;
-            signIn1.Visible = false;
-            serverList1.Hide();
-            atcComms1.Visible = false;
-            options1.Hide();
             UserControl1.timerOn = false;
+            userControl11.Hide();
             button2.Hide();
             button4.Hide();
-            button3.Hide();
-            button5.Hide();
             button6.Hide();
+            button5.Hide();
             button7.Hide();
+            button3.Hide();
+            signIn1.Visible = false;
+            HR1.Visible = false;
+            HR.Visible = false;
+            label3.Visible = false;
+            serverList1.Hide();
             options1.Hide();
             button1.Hide();
-            pictureBox1.Show();
-            Connect.Show();
-            label1.Show();
+            atcComms1.Visible = false;
+            lrmDatabase1.Visible = false;
 
-            label2.Text = "Not Connected";
-            label2.ForeColor = Color.Red;
+            label3.Text = "Not Connected";
+            label3.ForeColor = Color.Red;
             
         }
 

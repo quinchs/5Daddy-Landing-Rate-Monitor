@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Windows.Forms;
 using FSUIPC;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace _5Daddy_Landing_Monitor
 {
@@ -25,7 +26,9 @@ namespace _5Daddy_Landing_Monitor
         private Offset<int> windSpeed = new Offset<int>(0x04BA);
         private Offset<int> windDirection = new Offset<int>(0x04DA);  //*360/65536 for heading
         private Offset<int> pitch = new Offset<int>(0x0578);
-        private Offset<string> aircraftType = new Offset<string>(0x3D00, 256);
+        private Offset<string> aircraftType = new Offset<string>(0x3D00, 256); 
+        private Offset<string> AircraftTypeExtra = new Offset<string>(0x3160, 24);
+        private Offset<string> aircraftIDExtra = new Offset<string>(0x3148, 24);
         private Offset<string> aircraftID = new Offset<string>(0x313C, 12);
         private Offset<int> roll = new Offset<int>(0x057C);
         public static int RefreshRate = 50;
@@ -40,6 +43,7 @@ namespace _5Daddy_Landing_Monitor
         internal string windHdg = "";
         internal string ATCID = "";
         internal string ATCTYPE = "";
+        internal string OldCraft = "";
 
         bool ongrnd = true;
 
@@ -51,6 +55,7 @@ namespace _5Daddy_Landing_Monitor
 
         private void UserControl1_Load(object sender, EventArgs e)
         {
+            imageList1.Images.Clear();
             if (FSUIPCConnection.IsOpen)
             {
                 timerOn = true;
@@ -58,10 +63,21 @@ namespace _5Daddy_Landing_Monitor
                 timer1.Enabled = timerOn;
                 timer1.Interval = RefreshRate;
             }
+            
         }
-
+        
+        string GetLine(string text, int lineNo)
+        {
+            try
+            {
+                string[] lines = text.Replace("\r", "").Split('\n');
+                return lines.Length >= lineNo ? lines[lineNo - 1] : null;
+            }
+            catch { return "0x359"; }
+        }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            
             UpdateScreenData(); 
             if(checkGroundTime >= 150)
             {
@@ -72,21 +88,86 @@ namespace _5Daddy_Landing_Monitor
                         FSUIPCConnection.Process();
                         if (GlobalData.COM1act != COM1act.Value) { GlobalData.COM1act = COM1act.Value; }
                         if (GlobalData.COM1sby != COM1sby.Value) { GlobalData.COM1sby = COM1sby.Value; }
+                        ATCID = aircraftID.Value;
+                        
                         int fpm = 0;
+                        if (ATCID != OldCraft)
+                        {
+                            imageList1.Images.Clear();
+                            Console.WriteLine("Changing Image...");
+                            ATCID = aircraftID.Value;
+                            ATCTYPE = aircraftType.Value;
+                            label10.Text = $"{ATCID} - {ATCTYPE}";
+                            string urlAddress = "https://www.airplane-pictures.net/registration.php?p=" + ATCID;
+                            Console.WriteLine(urlAddress);
+                            WebClient client = new WebClient();
+                            client.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+                            int lineis = 0;
+                            bool Found = false;
+                            bool count = false;
+                            string image = "";
+                            int permline = 0;
+                            client.DownloadFile(urlAddress, Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp");
+                            string[] Page_AppGet = File.ReadAllLines(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp");
+                            foreach (string line in Page_AppGet)
+                            {
+                                lineis = lineis + 1;
+                                if (Found == false)
+                                {
+
+                                    if (line.Contains("<img src='"))
+                                    {
+                                        Found = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (count == false)
+                                    {
+                                        permline = lineis - 1;
+                                        count = true;
+                                    }
+                                }
+                            }
+                            string Line = GetLine(File.ReadAllText(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp"), permline);
+                            if (Line != "0x359")
+                            {
+
+
+                                string before = Regex.Split(Line, "<img src='")[1];
+                                string Images = Regex.Split(before, "'")[0];
+                                string Type = Images.Split('.')[1];
+                                client.DownloadFile(Images, Environment.CurrentDirectory + @"\Data\AircraftImage.lco");
+                                imageList1.Images.Add(Image.FromFile(Environment.CurrentDirectory + @"\Data\AircraftImage.lco"));
+                                imageList1.ImageSize = new Size(191, 125);
+                                pictureBox1.Image = imageList1.Images[0];
+                                File.Delete(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp");
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    imageList1.Images.Clear();
+                                    Console.WriteLine("Failed..");
+                                }
+                                catch { }
+                            }
+                        }
+                        OldCraft = ATCID;
                         if (!ongrnd)
                         {
                             double verticalSpeedMPS = verticalSpeed.Value / 256d;
                             double verticalSpeedFPM = verticalSpeedMPS * 60d * 3.28084d;
                             var vsFPM = Convert.ToInt32(verticalSpeedFPM);
-                            ATCID = aircraftID.Value;
+                            
                             ATCTYPE = aircraftType.Value;
-                            label10.Text = $"({ATCID} - {ATCTYPE})";
+                            label10.Text = $"{ATCID} - {ATCTYPE}";
                             fpm = vsFPM;
-                            textBox1.Text = vsFPM.ToString();
+                            VSRate.Text = "Feet Per Minute: " + vsFPM.ToString();
                             timer1.Enabled = timerOn;
                             double airspeedKnots = (double)airspeed.Value / 128d;
                             airspd = Convert.ToInt32(airspeedKnots).ToString();
-                            textBox4.Text = airspd;
+                            SpeedLabel.Text = "Speed: "+airspd;
                             var plnPitch = (double)pitch.Value * 360 / 4294967296 * -1;
 
                             WeatherServices ws = FSUIPCConnection.WeatherServices;
@@ -97,19 +178,19 @@ namespace _5Daddy_Landing_Monitor
                                 FsWindLayer windLayer = weather.WindLayers[0];
                                 windHdg = windLayer.Direction.ToString("000");
                                 windSpd = windLayer.SpeedKnots.ToString("F0");
-                                textBox5.Text = windLayer.SpeedKnots.ToString("F0");
-                                textBox6.Text = windLayer.Direction.ToString("000");
+                                WiSpLabel.Text = "Wind Speed: " + windLayer.SpeedKnots.ToString("F0");
+                                WiDiLabel.Text = "Wind Direction: " + windLayer.Direction.ToString("000");
                             }
 
                             tmp = Convert.ToInt32(plnPitch);
                             if (tmp >= 0)
                             {
-                                textBox2.Text = tmp.ToString() + "▲";
+                                PitchLabel.Text = "Pitch: " + tmp.ToString() + "▲";
                             }
                             if (tmp < 0)
                             {
                                 tmp = tmp * -1;
-                                textBox2.Text = tmp.ToString() + "▼";
+                                PitchLabel.Text = "Pitch: " + tmp.ToString() + "▼";
                             }
 
                             var plnBank = (double)roll.Value * 360 / 4294967296;
@@ -123,7 +204,7 @@ namespace _5Daddy_Landing_Monitor
                                 planebnk = Convert.ToInt32(plnBank * -1).ToString() + "R";
                             }
                             plnbnk = planebnk;
-                            textBox3.Text = planebnk;
+                            BankLabel.Text = "Bank: "+planebnk;
                             timer1.Interval = RefreshRate;
 
                         }
@@ -164,14 +245,14 @@ namespace _5Daddy_Landing_Monitor
                                 ongrnd = true;
 
                                 fpmstringscore(fpm);
-                                if(textBox7.Text != "")
+                                if(Rate.Text != "")
                                 {
                                     LandingStats ls = new LandingStats();
                                     ls.FPM = fpm.ToString();
                                     ls.Speed = airspd;
-                                    ls.Score = textBox7.Text;
+                                    ls.Score = Rate.Text;
                                     ls.Roll = plnbnk;
-                                    ls.Pitch = textBox2.Text;
+                                    ls.Pitch = PitchLabel.Text.Replace("Pitch: ", "");
                                     ls.WindSpeed = windSpd;
                                     ls.WindDirection = windHdg;
                                     LRMDatabase.AddStat(ls);
@@ -180,7 +261,7 @@ namespace _5Daddy_Landing_Monitor
                         }
                         if (onGroundText == "N")
                         {
-                            label8.Text = "In Air";
+                            label8.Text = "Airborn";
                             ongrnd = false;
                             rptOnGround = true;
                         }
@@ -205,42 +286,42 @@ namespace _5Daddy_Landing_Monitor
         {
             if (fpm <= -1500)
             {
-                textBox7.Text = "DEAD!";
+                Rate.Text = "DEAD!";
                 return;
             }
             if (fpm <= -700)
             {
-                textBox7.Text = "1/10!";
+                Rate.Text = "1/10!";
                 return;
             }
             if (fpm <= -500)
             {
-                textBox7.Text = "Need repair!";
+                Rate.Text = "Need repair!";
                 return;
             }
             if (fpm <= -300)
             {
-                textBox7.Text = "Ouch!";
+                Rate.Text = "Ouch!";
                 return;
             }
             if (fpm <= -200)
             {
-                textBox7.Text = "Harsh!";
+                Rate.Text = "Harsh!";
                 return;
             }
             if (fpm <= -175)
             {
-                textBox7.Text = "Nice!";
+                Rate.Text = "Nice!";
                 return;
             }
             if (fpm <= -100)
             {
-                textBox7.Text = "Smooth!";
+                Rate.Text = "Smooth!";
                 return;
             }
             if (fpm <= -50)
             {
-                textBox7.Text = "Butter!";
+                Rate.Text = "Butter!";
                 return;
             }
         }
@@ -317,7 +398,7 @@ namespace _5Daddy_Landing_Monitor
 
         }
 
-        private void textBox7_TextChanged(object sender, EventArgs e)
+        private void Rate_TextChanged(object sender, EventArgs e)
         {
 
         }
@@ -348,6 +429,10 @@ namespace _5Daddy_Landing_Monitor
         {
 
         }
-        
+
+        private void Rate_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

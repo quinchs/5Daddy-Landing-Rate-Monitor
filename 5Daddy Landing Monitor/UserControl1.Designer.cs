@@ -29,275 +29,180 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBox7 = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.PitchLabel = new MetroFramework.Controls.MetroLabel();
+            this.BankLabel = new MetroFramework.Controls.MetroLabel();
+            this.SpeedLabel = new MetroFramework.Controls.MetroLabel();
+            this.WiDiLabel = new MetroFramework.Controls.MetroLabel();
+            this.WiSpLabel = new MetroFramework.Controls.MetroLabel();
+            this.VSRate = new MetroFramework.Controls.MetroLabel();
+            this.Rate = new MetroFramework.Controls.MetroLabel();
+            this.label8 = new MetroFramework.Controls.MetroLabel();
+            this.label10 = new MetroFramework.Controls.MetroLabel();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Arial", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(714, 41);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(118, 46);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "FPM:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox1.Location = new System.Drawing.Point(829, 39);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(196, 60);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label2.Location = new System.Drawing.Point(21, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(121, 46);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Pitch:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label3.Location = new System.Drawing.Point(21, 85);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(122, 46);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Bank:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label4.Location = new System.Drawing.Point(3, 143);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(146, 46);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Speed:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox2.Location = new System.Drawing.Point(137, 23);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(157, 48);
-            this.textBox2.TabIndex = 5;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // textBox3
-            // 
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox3.Location = new System.Drawing.Point(137, 85);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(129, 48);
-            this.textBox3.TabIndex = 6;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
-            // 
-            // textBox4
-            // 
-            this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox4.Location = new System.Drawing.Point(137, 143);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(129, 48);
-            this.textBox4.TabIndex = 7;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(673, 62);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(47, 27);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Kts";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label8.Location = new System.Drawing.Point(21, 194);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(211, 46);
-            this.label8.TabIndex = 13;
-            this.label8.Text = "onground: ";
-            // 
-            // textBox6
-            // 
-            this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox6.Location = new System.Drawing.Point(567, 95);
-            this.textBox6.Multiline = true;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(100, 48);
-            this.textBox6.TabIndex = 11;
-            this.textBox6.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label6.Location = new System.Drawing.Point(269, 92);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(292, 46);
-            this.label6.TabIndex = 9;
-            this.label6.Text = "Wind Direction:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.label5.Location = new System.Drawing.Point(313, 31);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(248, 46);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Wind Speed:";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
-            // 
-            // textBox5
-            // 
-            this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
-            this.textBox5.Location = new System.Drawing.Point(567, 41);
-            this.textBox5.Multiline = true;
-            this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(100, 48);
-            this.textBox5.TabIndex = 10;
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(272, 159);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(47, 27);
-            this.label9.TabIndex = 14;
-            this.label9.Text = "Kts";
-            // 
-            // textBox7
-            // 
-            this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.textBox7.Location = new System.Drawing.Point(829, 105);
-            this.textBox7.Multiline = true;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(196, 38);
-            this.textBox7.TabIndex = 15;
-            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox7.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.checkBox1.Location = new System.Drawing.Point(266, 207);
+            this.checkBox1.Location = new System.Drawing.Point(20, 201);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(344, 33);
+            this.checkBox1.Size = new System.Drawing.Size(229, 24);
             this.checkBox1.TabIndex = 16;
             this.checkBox1.Text = "Send to (server) LRM Server";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // PitchLabel
+            // 
+            this.PitchLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.PitchLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.PitchLabel.Location = new System.Drawing.Point(17, 36);
+            this.PitchLabel.Name = "PitchLabel";
+            this.PitchLabel.Size = new System.Drawing.Size(149, 29);
+            this.PitchLabel.TabIndex = 18;
+            this.PitchLabel.Text = "Pitch: 0";
+            // 
+            // BankLabel
+            // 
+            this.BankLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.BankLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.BankLabel.Location = new System.Drawing.Point(17, 65);
+            this.BankLabel.Name = "BankLabel";
+            this.BankLabel.Size = new System.Drawing.Size(149, 29);
+            this.BankLabel.TabIndex = 19;
+            this.BankLabel.Text = "Bank: 0";
+            // 
+            // SpeedLabel
+            // 
+            this.SpeedLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.SpeedLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.SpeedLabel.Location = new System.Drawing.Point(20, 97);
+            this.SpeedLabel.Name = "SpeedLabel";
+            this.SpeedLabel.Size = new System.Drawing.Size(171, 29);
+            this.SpeedLabel.TabIndex = 20;
+            this.SpeedLabel.Text = "Speed: 0";
+            // 
+            // WiDiLabel
+            // 
+            this.WiDiLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.WiDiLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.WiDiLabel.Location = new System.Drawing.Point(215, 68);
+            this.WiDiLabel.Name = "WiDiLabel";
+            this.WiDiLabel.Size = new System.Drawing.Size(191, 29);
+            this.WiDiLabel.TabIndex = 21;
+            this.WiDiLabel.Text = "Wind Direction: 0";
+            // 
+            // WiSpLabel
+            // 
+            this.WiSpLabel.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.WiSpLabel.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.WiSpLabel.Location = new System.Drawing.Point(215, 36);
+            this.WiSpLabel.Name = "WiSpLabel";
+            this.WiSpLabel.Size = new System.Drawing.Size(191, 29);
+            this.WiSpLabel.TabIndex = 22;
+            this.WiSpLabel.Text = "Wind Speed: 0";
+            // 
+            // VSRate
+            // 
+            this.VSRate.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.VSRate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.VSRate.Location = new System.Drawing.Point(392, 36);
+            this.VSRate.Name = "VSRate";
+            this.VSRate.Size = new System.Drawing.Size(191, 29);
+            this.VSRate.TabIndex = 23;
+            this.VSRate.Text = "Feet Per Minute: 0";
+            // 
+            // Rate
+            // 
+            this.Rate.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.Rate.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.Rate.Location = new System.Drawing.Point(392, 65);
+            this.Rate.Name = "Rate";
+            this.Rate.Size = new System.Drawing.Size(171, 29);
+            this.Rate.TabIndex = 24;
+            this.Rate.Click += new System.EventHandler(this.Rate_Click);
+            // 
+            // label8
+            // 
+            this.label8.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.label8.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.label8.Location = new System.Drawing.Point(392, 65);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(126, 41);
+            this.label8.TabIndex = 25;
+            // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.label10.Location = new System.Drawing.Point(354, 150);
+            this.label10.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.label10.FontWeight = MetroFramework.MetroLabelWeight.Regular;
+            this.label10.Location = new System.Drawing.Point(17, 7);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(32, 36);
-            this.label10.TabIndex = 17;
-            this.label10.Text = "0";
-            this.label10.Click += new System.EventHandler(this.label10_Click);
+            this.label10.Size = new System.Drawing.Size(646, 29);
+            this.label10.TabIndex = 26;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(392, 97);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(191, 125);
+            this.pictureBox1.TabIndex = 27;
+            this.pictureBox1.TabStop = false;
             // 
             // UserControl1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.Rate);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.textBox7);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.VSRate);
+            this.Controls.Add(this.WiSpLabel);
+            this.Controls.Add(this.WiDiLabel);
+            this.Controls.Add(this.SpeedLabel);
+            this.Controls.Add(this.BankLabel);
+            this.Controls.Add(this.PitchLabel);
+            this.Controls.Add(this.checkBox1);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "UserControl1";
-            this.Size = new System.Drawing.Size(1028, 287);
+            this.Size = new System.Drawing.Size(685, 246);
             this.Load += new System.EventHandler(this.UserControl1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox7;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Label label10;
+        private MetroFramework.Controls.MetroLabel PitchLabel;
+        private MetroFramework.Controls.MetroLabel BankLabel;
+        private MetroFramework.Controls.MetroLabel SpeedLabel;
+        private MetroFramework.Controls.MetroLabel WiDiLabel;
+        private MetroFramework.Controls.MetroLabel WiSpLabel;
+        private MetroFramework.Controls.MetroLabel VSRate;
+        private MetroFramework.Controls.MetroLabel Rate;
+        private MetroFramework.Controls.MetroLabel label8;
+        private MetroFramework.Controls.MetroLabel label10;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
