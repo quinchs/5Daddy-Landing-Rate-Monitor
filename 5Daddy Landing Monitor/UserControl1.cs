@@ -132,16 +132,10 @@ namespace _5Daddy_Landing_Monitor
                             string Line = GetLine(File.ReadAllText(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp"), permline);
                             if (Line != "0x359")
                             {
-
-
                                 string before = Regex.Split(Line, "<img src='")[1];
                                 string Images = Regex.Split(before, "'")[0];
-                                string Type = Images.Split('.')[1];
-                                client.DownloadFile(Images, Environment.CurrentDirectory + @"\Data\AircraftImage.lco");
-                                imageList1.Images.Add(Image.FromFile(Environment.CurrentDirectory + @"\Data\AircraftImage.lco"));
-                                imageList1.ImageSize = new Size(191, 125);
-                                pictureBox1.Image = imageList1.Images[0];
-                                File.Delete(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp");
+                                pictureBox1.Load(Images);
+                                //File.Delete(Environment.CurrentDirectory + @"\Data\AircraftConfig.tmp");
                             }
                             else
                             {
@@ -248,6 +242,7 @@ namespace _5Daddy_Landing_Monitor
                                 if(Rate.Text != "")
                                 {
                                     LandingStats ls = new LandingStats();
+                                    ls.Date = $"{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Year} {DateTime.Now.ToShortTimeString()}";
                                     ls.FPM = fpm.ToString();
                                     ls.Speed = airspd;
                                     ls.Score = Rate.Text;

@@ -33,8 +33,6 @@ namespace _5Daddy_Landing_Monitor
             button7.Hide();
             button3.Hide();
             signIn1.Visible = false;
-            HR1.Visible = false;
-            HR.Visible = false;
             label3.Visible = false;
             serverList1.Hide();
             options1.Hide();
@@ -102,8 +100,7 @@ namespace _5Daddy_Landing_Monitor
                     button7.Show();
                     button4.Show();
                     button5.Show();
-                    HR1.Visible = true;
-                    HR.Visible = true;
+                    
                     label3.Visible = true;
                     label3.ForeColor = Color.Green;
                     label3.Text = "Connected!";
@@ -125,25 +122,6 @@ namespace _5Daddy_Landing_Monitor
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            options1.Hide();
-            signIn1.Visible = false;
-            serverList1.Hide();
-            userControl11.Show();
-            lrmDatabase1.Visible = false;
-            atcComms1.Visible = false;
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            options1.Show();
-            serverList1.Hide();
-            signIn1.Visible = false;
-            userControl11.Hide();
-            lrmDatabase1.Visible = false;
-            atcComms1.Visible = false;
-        }
         
         private void button3_Click(object sender, EventArgs e)
         {
@@ -157,9 +135,10 @@ namespace _5Daddy_Landing_Monitor
             button7.Hide();
             button3.Hide();
             signIn1.Visible = false;
-            HR1.Visible = false;
-            HR.Visible = false;
+            pictureBox1.Show();
             label3.Visible = false;
+            Connect.Show();
+            label1.Show();
             serverList1.Hide();
             options1.Hide();
             button1.Hide();
@@ -238,6 +217,26 @@ namespace _5Daddy_Landing_Monitor
             signIn1.Visible = false;
             atcComms1.Visible = false;
             lrmDatabase1.Visible = true;
+        }
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+            options1.Show();
+            serverList1.Hide();
+            signIn1.Visible = false;
+            userControl11.Hide();
+            lrmDatabase1.Visible = false;
+            atcComms1.Visible = false;
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            options1.Hide();
+            signIn1.Visible = false;
+            serverList1.Hide();
+            userControl11.Show();
+            lrmDatabase1.Visible = false;
+            atcComms1.Visible = false;
         }
     }
 }

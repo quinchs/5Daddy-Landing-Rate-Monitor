@@ -48,49 +48,63 @@ namespace _5Daddy_Landing_Monitor
             }
             else
             {
-                if (Visible)
+                if (GlobalData.LoggedIn)
                 {
-                    label2.Hide();
-                    TCPJsonData data = new TCPJsonData();
-                    data.Header = "Get_Servers";
-                    data.Auth = GlobalData.Auth;
-                    byte[] sendBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
-                    //MasterServer.MasterServerSocket.ReceiveTimeout = 5000;
-                    try { MasterServer.SendandRecieveTCPData(data); }
-                    catch(Exception ex) { MessageBox.Show("Could not Refresh sevrers. The Master Didnt Respond!", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-                    byte[] buffer = new byte[1024];
-                    int Recievebuf = 0; //MasterServer.MasterServerSocket.Receive(buffer);
-                    byte[] databuff = new byte[Recievebuf];
-                    Array.Copy(buffer, databuff, Recievebuf);
-                    string text = Encoding.ASCII.GetString(databuff);
-                    
-                    if (text.Contains("Header\":\"Server_Error"))
+                    if (Visible)
                     {
-                        if(GlobalData.Auth == "")
+                        label2.Hide();
+                        TCPJsonData data = new TCPJsonData();
+                        data.Header = "Get_Servers";
+                        data.Auth = GlobalData.Auth;
+                        byte[] sendBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
+                        //MasterServer.MasterServerSocket.ReceiveTimeout = 5000;
+                        try { MasterServer.SendandRecieveTCPData(data); }
+                        catch (Exception ex) { MessageBox.Show("Could not Refresh sevrers. The Master Didnt Respond!", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                        byte[] buffer = new byte[1024];
+                        int Recievebuf = 0; //MasterServer.MasterServerSocket.Receive(buffer);
+                        byte[] databuff = new byte[Recievebuf];
+                        Array.Copy(buffer, databuff, Recievebuf);
+                        string text = Encoding.ASCII.GetString(databuff);
+
+                        if (text.Contains("Header\":\"Server_Error"))
                         {
-                            label2.Show();
+                            if (GlobalData.Auth == "")
+                            {
+                                label2.Show();
+                            }
+                            else
+                            {
+                                TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                                MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                            }
+                        }
+                        if (text.Contains("Header\":\"LRMServers_List"))
+                        {
+                            label2.Hide();
+                            MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
+                            if (serverListData.Auth == GlobalData.Auth)
+                            {
+                                serverList = serverListData.Body;
+                                updataFormItems();
+                            }
                         }
                         else
                         {
-                            TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
-                            MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
+                            MessageBox.Show("Unknown Server Responce!", "Uh Oh!");
                         }
                     }
-                    if (text.Contains("Header\":\"LRMServers_List"))
-                    {
-                        label2.Hide();
-                        MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
-                        if (serverListData.Auth == GlobalData.Auth)
-                        {
-                            serverList = serverListData.Body;
-                            updataFormItems();
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Unknown Server Responce!", "Uh Oh!");
-                    }
+                }
+                else
+                {
+                    label1.Hide();
+                    label5.Hide();
+                    dataGridView1.Hide();
+                    button1.Hide();
+                    button2.Hide();
+                    button3.Hide();
+                    comboBox1.Hide();
+                    label2.Show();
                 }
             }
         }
