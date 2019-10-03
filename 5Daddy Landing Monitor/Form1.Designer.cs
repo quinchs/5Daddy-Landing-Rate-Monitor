@@ -42,10 +42,13 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.lrmDatabase1 = new _5Daddy_Landing_Monitor.LRMDatabase();
+            this.userControl11 = new _5Daddy_Landing_Monitor.UserControl1();
+            this.options1 = new _5Daddy_Landing_Monitor.Options();
+            this.serverList1 = new _5Daddy_Landing_Monitor.ServerList();
             this.atcComms1 = new _5Daddy_Landing_Monitor.ATCComms();
             this.signIn1 = new _5Daddy_Landing_Monitor.SignIn();
-            this.lrmDatabase1 = new _5Daddy_Landing_Monitor.LRMDatabase();
-            this.button7 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
@@ -187,6 +190,45 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(405, 290);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(109, 43);
+            this.button7.TabIndex = 17;
+            this.button7.Text = "Database";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // lrmDatabase1
+            // 
+            this.lrmDatabase1.Location = new System.Drawing.Point(8, -3);
+            this.lrmDatabase1.Name = "lrmDatabase1";
+            this.lrmDatabase1.Size = new System.Drawing.Size(1028, 287);
+            this.lrmDatabase1.TabIndex = 16;
+            this.lrmDatabase1.Load += new System.EventHandler(this.lrmDatabase1_Load);
+            // 
+            // userControl11
+            // 
+            this.userControl11.Location = new System.Drawing.Point(12, -3);
+            this.userControl11.Name = "userControl11";
+            this.userControl11.Size = new System.Drawing.Size(1036, 287);
+            this.userControl11.TabIndex = 13;
+            // 
+            // options1
+            // 
+            this.options1.Location = new System.Drawing.Point(12, -3);
+            this.options1.Name = "options1";
+            this.options1.Size = new System.Drawing.Size(1036, 287);
+            this.options1.TabIndex = 13;
+            // 
+            // serverList1
+            // 
+            this.serverList1.Location = new System.Drawing.Point(12, -3);
+            this.serverList1.Name = "serverList1";
+            this.serverList1.Size = new System.Drawing.Size(1036, 287);
+            this.serverList1.TabIndex = 13;
+            // 
             // atcComms1
             // 
             this.atcComms1.Location = new System.Drawing.Point(8, -3);
@@ -202,24 +244,6 @@
             this.signIn1.Size = new System.Drawing.Size(1036, 287);
             this.signIn1.TabIndex = 13;
             this.signIn1.Load += new System.EventHandler(this.signIn1_Load);
-            // 
-            // lrmDatabase1
-            // 
-            this.lrmDatabase1.Location = new System.Drawing.Point(8, -3);
-            this.lrmDatabase1.Name = "lrmDatabase1";
-            this.lrmDatabase1.Size = new System.Drawing.Size(1028, 287);
-            this.lrmDatabase1.TabIndex = 16;
-            this.lrmDatabase1.Load += new System.EventHandler(this.lrmDatabase1_Load);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(405, 290);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(109, 43);
-            this.button7.TabIndex = 17;
-            this.button7.Text = "Database";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // Form1
             // 
@@ -276,6 +300,9 @@
         private System.Windows.Forms.Button button6;
         private ATCComms atcComms1;
         private LRMDatabase lrmDatabase1;
+        private UserControl1 userControl11;
+        private Options options1;
+        private ServerList serverList1;
         private System.Windows.Forms.Button button7;
     }
 }

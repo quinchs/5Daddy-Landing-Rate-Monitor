@@ -29,7 +29,7 @@ namespace _5Daddy_Landing_Monitor
         private void LRMDatabasecs_Load(object sender, EventArgs e)
         {
             //handle loading the json
-            string scorefile = Application.StartupPath + @"\LandingScores.json";
+            string scorefile = GlobalData.landinglistsJsonPath;
             try
             {
                 var dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
@@ -89,7 +89,7 @@ namespace _5Daddy_Landing_Monitor
         private static void SaveScores(LandingStats stats)
         {
             //load the LandingStats
-            string scorefile = GlobalData.landinglists;
+            string scorefile = GlobalData.landinglistsJsonPath;
             if (!File.Exists(scorefile)) { File.Create(scorefile).Close(); }
             try
             {

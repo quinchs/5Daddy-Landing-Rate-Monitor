@@ -23,7 +23,7 @@ namespace _5Daddy_Landing_Monitor
         internal static string Auth;
         internal static LRMServerData CurrentConnectedLRMServer { get; set; }
         internal static string _5DatFile = Environment.CurrentDirectory + @"\Data\5LRM.5DAT";
-        internal static string landinglists = Environment.CurrentDirectory + @"\Data\LandingScores.json";
+        internal static string landinglistsJsonPath = Environment.CurrentDirectory + @"\Data\LandingScores.json";
         internal static ushort COM1sby;
         internal static void ErrorLogInput(Exception ex, string errorVal)
         {

@@ -18,10 +18,6 @@ namespace _5Daddy_Landing_Monitor
 {
     public partial class Form1 : Form
     {
-        private UserControl1 userControl11 = new UserControl1();
-        private Options options1 = new Options();
-        private ServerList serverList1 = new ServerList();
-
         public Form1()
         {
             InitializeComponent();
