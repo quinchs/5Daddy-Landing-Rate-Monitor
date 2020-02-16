@@ -17,7 +17,9 @@ namespace _5Daddy_Landing_Monitor
 {
     public partial class UserControl1 : UserControl
     {
-
+        private static Offset<uint> heading = new Offset<uint>(0x0580);
+        private static Offset<long> Longitude = new Offset<long>(0x0568);
+        private static Offset<long> latitude = new Offset<long>(0x0560);
         private static Offset<uint> airspeed = new Offset<uint>(0x02BC);             // 4-byte offset - Unsigned integer 
         private static Offset<int> verticalSpeed = new Offset<int>(0x02C8);          // 4-byte offset - Signed integer 
         private Offset<ushort> onGround = new Offset<ushort>(0x0366);
@@ -89,7 +91,10 @@ namespace _5Daddy_Landing_Monitor
                         if (GlobalData.COM1act != COM1act.Value) { GlobalData.COM1act = COM1act.Value; }
                         if (GlobalData.COM1sby != COM1sby.Value) { GlobalData.COM1sby = COM1sby.Value; }
                         ATCID = aircraftID.Value;
-                        
+                        GlobalData.Lat = (double)latitude.Value * 90.0 / (10001750.0 * 65536.0 * 65536.0);
+                        GlobalData.Long = (double)Longitude.Value * 360 / (1.8446744e+19);
+                        GlobalData.Heading = (int)Math.Round((double)heading.Value * 360 / 4294967296);
+                        GlobalData.speed = (int)Math.Round(airspeed.Value / 128d);
                         int fpm = 0;
                         if (ATCID != OldCraft)
                         {
@@ -326,7 +331,7 @@ namespace _5Daddy_Landing_Monitor
             {
                 if (GlobalData.LoggedIn && GlobalData.CurrentConnectedLRMServer.Type == "LRMComp")
                 {
-                    TCPJsonData data = new TCPJsonData()
+                    HTTPData data = new HTTPData()
                     {
                         Auth = GlobalData.Auth,
                         Header = "Landing_Data",

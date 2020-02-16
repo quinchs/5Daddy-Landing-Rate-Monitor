@@ -16,6 +16,7 @@ namespace _5Daddy_Landing_Monitor
     {
         internal static int rownum = 0;
         static DataGridView dgv;
+        internal static LandingStatList currentStats { get; set; }
         public struct LandingStatList
         {
             public List<LandingStats> LandingStatslist { get; set; }
@@ -24,16 +25,42 @@ namespace _5Daddy_Landing_Monitor
         {
             InitializeComponent();
             dgv = dataGridView1;
+            dataGridView1.MouseClick += DataGridView1_MouseClick;
         }
 
+        private void DataGridView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ContextMenu m = new ContextMenu();
+                var d = m.MenuItems.Add(new MenuItem("Delete"));
+                m.Show(dataGridView1, new Point(e.X, e.Y));
+
+                m.MenuItems[d].Click += (object sender2, EventArgs e2) =>
+                {
+                    int currentMouseOverRow = dataGridView1.HitTest(e.X, e.Y).RowIndex;
+
+                    if (currentMouseOverRow >= 0)
+                    {
+                        var row = dataGridView1.Rows[currentMouseOverRow];
+                        string date = row.Cells[0].Value.ToString();
+                        string fpm = row.Cells[2].Value.ToString();
+                        LandingStats item = currentStats.LandingStatslist.FirstOrDefault(x => x.FPM == fpm && x.Date == date);
+                        currentStats.LandingStatslist.Remove(item);
+                        dataGridView1.Rows.Remove(row);
+                        SaveScores();
+                    }
+                };
+            }
+        }
         private void LRMDatabasecs_Load(object sender, EventArgs e)
         {
             //handle loading the json
             string scorefile = GlobalData.landinglistsJsonPath;
             try
             {
-                var dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
-
+                LandingStatList dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
+                currentStats = dat;
                 foreach (var item in dat.LandingStatslist)
                 {
                     dgv.Rows.Add();
@@ -86,29 +113,42 @@ namespace _5Daddy_Landing_Monitor
                 }
             }
         }
-        private static void SaveScores(LandingStats stats)
+        private static void SaveScores(LandingStats stats = default(LandingStats))
         {
-            //load the LandingStats
             string scorefile = GlobalData.landinglistsJsonPath;
-            if (!File.Exists(scorefile)) { File.Create(scorefile).Close(); }
-            try
+            if (stats.Date is null)
             {
-                var dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
-                dat.LandingStatslist.Add(stats);
-                string json = JsonConvert.SerializeObject(dat, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(currentStats, Formatting.Indented);
                 File.WriteAllText(scorefile, json);
             }
-            catch
+            else
             {
-                LandingStatList l = new LandingStatList
+                if (!File.Exists(scorefile)) { File.Create(scorefile).Close(); }
+                try
                 {
-                    LandingStatslist = new List<LandingStats>()
-                };
-                l.LandingStatslist.Add(stats);
-                string json = JsonConvert.SerializeObject(l, Formatting.Indented);
-                File.WriteAllText(scorefile, json);
+                    var dat = JsonConvert.DeserializeObject<LandingStatList>(File.ReadAllText(scorefile));
+                    dat.LandingStatslist.Add(stats);
+                    currentStats = dat;
+                    string json = JsonConvert.SerializeObject(dat, Formatting.Indented);
+                    File.WriteAllText(scorefile, json);
+                }
+                catch
+                {
+                    LandingStatList l = new LandingStatList
+                    {
+                        LandingStatslist = new List<LandingStats>()
+                    };
+                    l.LandingStatslist.Add(stats);
+                    currentStats = l;
+                    string json = JsonConvert.SerializeObject(l, Formatting.Indented);
+                    File.WriteAllText(scorefile, json);
+                }
             }
+            //load the LandingStats
+            
         }
+
+       
     }
     public struct LandingStats
     {

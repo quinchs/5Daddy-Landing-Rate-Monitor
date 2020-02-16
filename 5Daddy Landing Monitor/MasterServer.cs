@@ -15,12 +15,13 @@ namespace _5Daddy_Landing_Monitor
     class MasterServer
     {
         private static HttpClient msClient = new HttpClient();
+        internal static int ReceiveTimeout = 10000;
         //private static Stream msStream;
         internal static Uri URI = new Uri("http://localhost:8081/"); //master server ip
         
         public async static Task<bool> Connect()
         {
-            TCPJsonData data = new TCPJsonData();
+            HTTPData data = new HTTPData();
             data.Header = "New_Client";
             data.Body = new Dictionary<string, string>();
             data.Body.Add("Version", GlobalData.Version);
@@ -32,7 +33,7 @@ namespace _5Daddy_Landing_Monitor
                 var msgb = MessageBox.Show("Error Connecting to Master server, Continue in offline mode?", "Uh Oh!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
                 if(msgb == DialogResult.Yes) { GlobalData.Offlinemode = true; return true; }
             }
-            TCPJsonData recievedData = JsonConvert.DeserializeObject<TCPJsonData>(rcved);
+            HTTPData recievedData = JsonConvert.DeserializeObject<HTTPData>(rcved);
             if (recievedData.Header == "Good_Version")
             {
                 //good
@@ -60,7 +61,7 @@ namespace _5Daddy_Landing_Monitor
             }
 
         }
-        public async static Task<string> SendandRecieveTCPData(TCPJsonData data)
+        public async static Task<string> SendandRecieveTCPData(HTTPData data, int Timeout = 5000)
         {
             try
             {
@@ -71,6 +72,7 @@ namespace _5Daddy_Landing_Monitor
                     Method = new HttpMethod("POST"),
                     RequestUri = URI,
                 };
+                //msClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
                 var msg = msClient.SendAsync(req).Result;
                 Stream rstream = await msg.Content.ReadAsStreamAsync();
                 byte[] buff = new byte[1024];
@@ -85,7 +87,8 @@ namespace _5Daddy_Landing_Monitor
                 throw new Exception("Could Not Send Data to Master Server!", ex);
             }
         }
-        public struct LRMServerClientListTCP
+       
+        public struct LRMServerClientListHTTP
         {
             public string Header { get; set; }
             public List<ServerList.LRMServer> Body { get; set; }

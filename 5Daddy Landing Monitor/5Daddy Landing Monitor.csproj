@@ -92,6 +92,7 @@
     <Compile Include="LRMDatabase.Designer.cs">
       <DependentUpon>LRMDatabase.cs</DependentUpon>
     </Compile>
+    <Compile Include="LRMServer.cs" />
     <Compile Include="MasterServer.cs" />
     <Compile Include="Options.cs">
       <SubType>UserControl</SubType>

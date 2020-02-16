@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
+using System.Media;
 
 namespace _5Daddy_Landing_Monitor
 {
@@ -20,11 +21,17 @@ namespace _5Daddy_Landing_Monitor
         internal static KeyValuePair<string, string> KPV { get; set; }
         internal static string ErrorLog = Environment.CurrentDirectory + @"\Data\ErrorLog.txt";
         internal static ushort COM1act;
+        internal static double Lat;
+        internal static SoundPlayer sp = new SoundPlayer($"{Environment.CurrentDirectory}\\Data\\Notification.wav");
+        internal static double Long;
+        internal static int Heading;
+        internal static int speed;
         internal static string Auth;
         internal static LRMServerData CurrentConnectedLRMServer { get; set; }
         internal static string _5DatFile = Environment.CurrentDirectory + @"\Data\5LRM.5DAT";
         internal static string landinglistsJsonPath = Environment.CurrentDirectory + @"\Data\LandingScores.json";
         internal static ushort COM1sby;
+        internal static FSUIPC.FsVersion CurrentFlightSim;
         internal static void ErrorLogInput(Exception ex, string errorVal)
         {
             try
@@ -38,7 +45,7 @@ namespace _5Daddy_Landing_Monitor
                 
             }
         }
-        internal static void sendJSONdata(TCPJsonData data)
+        internal static void sendJSONdata(HTTPData data)
         {
             //if(socket != null)
             //{
@@ -78,10 +85,10 @@ namespace _5Daddy_Landing_Monitor
         public string Name { get; set; }
         public string Type { get; set; }
         public string PlayerCount { get; set; }
-        public Socket serverSocket { get; set; }
+        public Uri serverURI { get; set; }
     }
 
-    public struct TCPJsonData
+    public struct HTTPData
     {
         public string Header { get; set; }
         public Dictionary<string, string> Body { get; set; }

@@ -15,12 +15,13 @@ using Newtonsoft.Json;
 using MetroFramework;
 using MetroFramework.Forms;
 using static _5Daddy_Landing_Monitor.SignIn;
+using System.Threading;
 
 namespace _5Daddy_Landing_Monitor
 {
     public partial class Form1 : MetroForm
     {
-
+        
         public Form1()
         {
             InitializeComponent();
@@ -36,11 +37,11 @@ namespace _5Daddy_Landing_Monitor
             label3.Visible = false;
             serverList1.Hide();
             options1.Hide();
+           
             button1.Hide();
             atcComms1.Visible = false;
             lrmDatabase1.Visible = false;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             if (!File.Exists(GlobalData.landinglistsJsonPath)) { File.Create(GlobalData.landinglistsJsonPath).Close(); }
@@ -75,6 +76,7 @@ namespace _5Daddy_Landing_Monitor
                 try
                 {
                     FSUIPCConnection.Open(FlightSim.Any);
+                    
                     ConnectionStatus();
                 }
                 catch (FSUIPCException ex)
@@ -93,6 +95,7 @@ namespace _5Daddy_Landing_Monitor
                 catch (Exception ex) { }
                 if (stat)
                 {
+                    GlobalData.CurrentFlightSim = FSUIPCConnection.FlightSimVersionConnected;
                     Connect.Hide();
                     pictureBox1.Hide();
                     button3.Show();
@@ -109,10 +112,45 @@ namespace _5Daddy_Landing_Monitor
                     button6.Show();
                     button1.Show();
                     userControl11.Show();
+                    Thread t = new Thread(HandlePos);
+                    t.Start();
                 }
             }
         }
-        
+
+        private void HandlePos()
+        {
+            System.Timers.Timer timer1 = new System.Timers.Timer()
+            {
+                Interval = 15000,
+                Enabled = true
+            };
+            timer1.Elapsed += GetandSendPosData;
+            
+        }
+
+        private async void GetandSendPosData(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalData.Offlinemode)
+                {
+                    HTTPData data = new HTTPData();
+                    data.Header = "Position_Data";
+                    data.Auth = GlobalData.Auth;
+                    data.Body = new Dictionary<string, string>()
+                {
+                    {"Latitude", GlobalData.Lat.ToString() },
+                    {"Longitude", GlobalData.Long.ToString()},
+                    {"Speed", GlobalData.speed.ToString() },
+                    {"Heading", GlobalData.Heading.ToString() }
+                };
+                    await MasterServer.SendandRecieveTCPData(data);
+                }
+            }
+            catch { }
+        }
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
@@ -238,5 +276,6 @@ namespace _5Daddy_Landing_Monitor
             lrmDatabase1.Visible = false;
             atcComms1.Visible = false;
         }
+        
     }
 }

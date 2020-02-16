@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,7 +39,10 @@
             this.Roll = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.WindSpeed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.WindDirection = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DeleteDatabaseRecord = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.DeleteDatabaseRecord.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -69,6 +73,7 @@
             this.Roll,
             this.WindSpeed,
             this.WindDirection});
+            this.dataGridView1.ContextMenuStrip = this.DeleteDatabaseRecord;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
@@ -133,6 +138,7 @@
             this.WindDirection.HeaderText = "Wind Direction";
             this.WindDirection.Name = "WindDirection";
             this.WindDirection.ReadOnly = true;
+            
             // 
             // LRMDatabase
             // 
@@ -143,6 +149,7 @@
             this.Size = new System.Drawing.Size(1028, 288);
             this.Load += new System.EventHandler(this.LRMDatabasecs_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.DeleteDatabaseRecord.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -158,5 +165,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Roll;
         private System.Windows.Forms.DataGridViewTextBoxColumn WindSpeed;
         private System.Windows.Forms.DataGridViewTextBoxColumn WindDirection;
+        private System.Windows.Forms.ContextMenuStrip DeleteDatabaseRecord;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     }
 }

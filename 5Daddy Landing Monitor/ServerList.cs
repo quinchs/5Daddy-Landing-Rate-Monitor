@@ -33,7 +33,7 @@ namespace _5Daddy_Landing_Monitor
             label5.Hide();
         }
 
-        private void GetServers(object sender, EventArgs e)
+        private async void GetServers(object sender, EventArgs e)
         {
             if(GlobalData.Offlinemode)
             {
@@ -53,19 +53,15 @@ namespace _5Daddy_Landing_Monitor
                     if (Visible)
                     {
                         label2.Hide();
-                        TCPJsonData data = new TCPJsonData();
+                        HTTPData data = new HTTPData();
                         data.Header = "Get_Servers";
                         data.Auth = GlobalData.Auth;
-                        byte[] sendBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
-                        //MasterServer.MasterServerSocket.ReceiveTimeout = 5000;
-                        try { MasterServer.SendandRecieveTCPData(data); }
+                        //byte[] sendBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data));
+                        MasterServer.ReceiveTimeout = 5000;
+                        string retString = "";
+                        try { retString = await MasterServer.SendandRecieveTCPData(data); }
                         catch (Exception ex) { MessageBox.Show("Could not Refresh sevrers. The Master Didnt Respond!", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
-                        byte[] buffer = new byte[1024];
-                        int Recievebuf = 0; //MasterServer.MasterServerSocket.Receive(buffer);
-                        byte[] databuff = new byte[Recievebuf];
-                        Array.Copy(buffer, databuff, Recievebuf);
-                        string text = Encoding.ASCII.GetString(databuff);
-
+                        string text = retString;
                         if (text.Contains("Header\":\"Server_Error"))
                         {
                             if (GlobalData.Auth == "")
@@ -74,7 +70,7 @@ namespace _5Daddy_Landing_Monitor
                             }
                             else
                             {
-                                TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                                HTTPData recdata = JsonConvert.DeserializeObject<HTTPData>(text);
                                 MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
                             }
@@ -82,7 +78,7 @@ namespace _5Daddy_Landing_Monitor
                         if (text.Contains("Header\":\"LRMServers_List"))
                         {
                             label2.Hide();
-                            MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
+                            MasterServer.LRMServerClientListHTTP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListHTTP>(text);
                             if (serverListData.Auth == GlobalData.Auth)
                             {
                                 serverList = serverListData.Body;
@@ -120,20 +116,17 @@ namespace _5Daddy_Landing_Monitor
         {
             try
             {
-                TCPJsonData data = new TCPJsonData()
+                HTTPData data = new HTTPData()
                 {
                     Auth = GlobalData.Auth,
                     Header = "Get_Servers",
                     Body = new Dictionary<string, string>()
                 };
-
-                try { MasterServer.SendandRecieveTCPData(data); }
-                catch(Exception ex) { GlobalData.ErrorLogInput(ex, "ERROR"); }
-                byte[] buffer = new byte[1024];
-                int Recievebuf = 0;// MasterServer.MasterServerSocket.Receive(buffer);
-                byte[] databuff = new byte[Recievebuf];
-                Array.Copy(buffer, databuff, Recievebuf);
-                string text = Encoding.ASCII.GetString(databuff);
+                string text = "";
+                try { text = MasterServer.SendandRecieveTCPData(data).Result; }
+                catch(Exception ex) { GlobalData.ErrorLogInput(ex, "ERROR"); MessageBox.Show("Error Recieving The servers list!", "Uh Oh!", MessageBoxButtons.OK); }
+                
+                
                 //var header = JsonConvert.DeserializeObject<Dictionary<string, string>>(text).FirstOrDefault(x => x.Key == "Header").Value;
                 if (text.Contains("Header\":\"Server_Error"))
                 {
@@ -143,7 +136,7 @@ namespace _5Daddy_Landing_Monitor
                     }
                     else
                     {
-                        TCPJsonData recdata = JsonConvert.DeserializeObject<TCPJsonData>(text);
+                        HTTPData recdata = JsonConvert.DeserializeObject<HTTPData>(text);
                         MessageBox.Show($"Invalad Request! Server Responce:\n{recdata.Body.FirstOrDefault(x => x.Key == "Reason").Value}", "Uh Oh!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         GlobalData.ErrorLogInput(new Exception("Invalad Authentication Token!"), "ERROR");
                     }
@@ -151,7 +144,7 @@ namespace _5Daddy_Landing_Monitor
                 if (text.Contains("Header\":\"LRMServers_List"))
                 {
                     label2.Hide();
-                    MasterServer.LRMServerClientListTCP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListTCP>(text);
+                    MasterServer.LRMServerClientListHTTP serverListData = JsonConvert.DeserializeObject<MasterServer.LRMServerClientListHTTP>(text);
                     if(serverListData.Auth == GlobalData.Auth)
                     {
                         serverList = serverListData.Body;
@@ -234,7 +227,7 @@ namespace _5Daddy_Landing_Monitor
             {
                 if (_clientSocket.Connected)
                 {
-                    TCPJsonData jdata = new TCPJsonData()
+                    HTTPData jdata = new HTTPData()
                     {
                         Body = new Dictionary<string, string>(),
                         Header = "Disconnect",
@@ -299,7 +292,7 @@ namespace _5Daddy_Landing_Monitor
                         if (KVP.Value != null)
                         {
                             _clientSocket.Connect(KVP.Value, 7878);
-                            TCPJsonData jdata = new TCPJsonData()
+                            HTTPData jdata = new HTTPData()
                             {
                                 Auth = GlobalData.Auth,
                                 Header = "Connect",
@@ -317,7 +310,7 @@ namespace _5Daddy_Landing_Monitor
                             byte[] recBytes = new byte[lng];
                             Array.Copy(ResponceBuff, recBytes, lng);
                             string responce = Encoding.ASCII.GetString(recBytes);
-                            TCPJsonData responceData = JsonConvert.DeserializeObject<TCPJsonData>(responce);
+                            HTTPData responceData = JsonConvert.DeserializeObject<HTTPData>(responce);
                             if (responceData.Auth == GlobalData.Auth)
                             {
                                 if (responceData.Header == "Success_Connect")
@@ -327,7 +320,7 @@ namespace _5Daddy_Landing_Monitor
                                         Name = responceData.Body.FirstOrDefault(x => x.Key == "Name").Value,
                                         Type = responceData.Body.FirstOrDefault(x => x.Key == "Type").Value,
                                         PlayerCount = responceData.Body.FirstOrDefault(x => x.Key == "Players").Value,
-                                        serverSocket = _clientSocket,
+                                        //serverSocket = _clientSocket,
                                     };
                                 }
                                 else { MessageBox.Show("Server Responded with an Invalad Responce!", "Uh Oh!", MessageBoxButtons.OK); }
@@ -376,6 +369,11 @@ namespace _5Daddy_Landing_Monitor
         }
 
         private void label2_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

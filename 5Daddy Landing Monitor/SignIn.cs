@@ -100,7 +100,7 @@ namespace _5Daddy_Landing_Monitor
                         HttpListenerContext context = l.GetContext();
                         HttpListenerRequest request = context.Request;
                         string id = request.QueryString["code"];
-                        TCPJsonData data = new TCPJsonData()
+                        HTTPData data = new HTTPData()
                         {
                             Header = "Validate_User",
                             Body = new Dictionary<string, string>()
@@ -110,7 +110,7 @@ namespace _5Daddy_Landing_Monitor
                         };
                         string res = MasterServer.SendandRecieveTCPData(data).Result;
 
-                        var resData = JsonConvert.DeserializeObject<TCPJsonData>(res);
+                        var resData = JsonConvert.DeserializeObject<HTTPData>(res);
                         string Discordusername = "";
                         string Auth = "";
                         if (resData.Header == "Authenticated")
